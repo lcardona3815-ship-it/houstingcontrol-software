@@ -1,3 +1,137 @@
 git clone https://github.com/lcardona3815-ship-it/houstingcontrol-software.git
-print ft 
-commit
+
+# Control Housing Estates
+
+Plataforma web para la administración integral de conjuntos residenciales.
+
+##  Descripción
+
+Control Housing Estates es una plataforma web orientada a la gestión integral de conjuntos residenciales. Su propósito es centralizar los procesos administrativos, operativos y de comunicación entre administradores, residentes y personal autorizado, optimizando la administración de recursos, la atención de solicitudes y el control de acceso mediante una solución segura, escalable y de fácil uso.
+
+##  Visión
+
+> Para **administradores y residentes de conjuntos residenciales**, que **necesitan centralizar la gestión de visitantes, paquetería, PQRS y zonas comunes**, **Control Housing Estates** es **una plataforma web** que **digitaliza y centraliza estos procesos administrativos**. A diferencia de **la gestión actual basada en papel y mensajería informal**, nuestro producto **ofrece una interfaz única, con roles diferenciados, que agiliza la comunicación y el control de acceso**.
+
+El sistema digitalizará el registro de paquetería, el registro de PQRS y el agendamiento de zonas comunes, proporcionando a residentes y administradores una interfaz amigable y de fácil acceso.
+
+##  Problema
+
+La administración de muchos conjuntos residenciales se realiza actualmente mediante procesos manuales, documentos físicos y aplicaciones de mensajería, lo que genera:
+
+- Falta de centralización de la información
+- Demoras en la atención de los usuarios
+- Dificultades en la gestión de visitantes y paquetes
+- Comunicación ineficiente entre la administración y los residentes
+- Dificultad para reservar zonas comunes
+
+##  Objetivo general
+
+Diseñar e implementar una plataforma web para la administración integral de conjuntos residenciales que optimice los procesos administrativos, mejore la comunicación entre los usuarios y facilite la gestión de la información.
+
+## Objetivos específicos
+
+- Gestionar la información de residentes, propietarios y apartamentos.
+- Administrar el registro de visitantes y correspondencia.
+- Controlar las reservas de zonas comunes.
+- Registrar y dar seguimiento a las PQRS.
+- Implementar un sistema de autenticación basado en roles.
+- Sistema de gestión de mantenimientos.
+
+## Alcance inicial (MVP — 10 semanas)
+
+Dado el tiempo disponible (10 semanas), el alcance inicial del proyecto se centra en:
+
+- [ ] Autenticación y gestión de usuarios por rol
+- [ ] Registro de visitantes y correspondencia
+- [ ] Reserva de zonas comunes
+- [ ] Registro y seguimiento de PQRS
+
+> **Fuera de alcance inicial (fase 2):** gestión de mantenimientos. Se documenta explícitamente como decisión de alcance dado el tiempo del proyecto; se retomará si el cronograma lo permite.
+
+## Restricciones
+
+- **Tiempo:** el proyecto debe completarse en 10 semanas.
+- **Equipo:** [completar número de integrantes y disponibilidad].
+- **Tecnológicas:** [completar stack elegido, hosting, base de datos, etc.].
+- **Académicas:** entregables y fechas definidas por la materia de Ingeniería de Software.
+
+##  Stakeholders
+
+| Stakeholder | Interés | Influencia | Función |
+|---|---|---|---|
+| Administrador del conjunto | Administración integral del sistema | Alta | Administra la plataforma, usuarios, comunicados y reportes. |
+| Consejo de Administración | Supervisión y toma de decisiones | Alta | Consulta indicadores y reportes para apoyar la toma de decisiones. |
+| Residentes | Acceso a servicios y consulta de información | Alta | Consulta información, realiza reservas, registra PQRS. |
+| Personal de portería | Registro de visitantes y paquetes | Media | Registra visitantes, correspondencia y controla el acceso. |
+| Personal de mantenimiento | Gestión de órdenes de trabajo | Media | Recibe y actualiza el estado de las órdenes de trabajo. |
+| Equipo de desarrollo | Desarrollo y mantenimiento del software | Alta | Diseña, construye y mantiene la plataforma. |
+
+##  Equipo y roles
+
+| Integrante | Rol | Responsabilidades |
+|---|---|---|
+| [Angela] | [ Líder / Scrum Master] | [Coordinación, seguimiento del tablero,[pruebas, documentación técnica] |
+| [Laura] | [Desarrollador Backend] | [API, base de datos, autenticación] |
+| Sebastian ] | [ Desarrollador Frontend] | [Interfaz, experiencia de usuario] |
+
+### Acuerdos de equipo
+
+- **Reuniones:** [miercoles domingos, 30 min]
+- **Comunicación:** [grupo de WhatsApp / Discord para temas rápidos, GitHub Issues para temas técnicos]
+- **Convención de commits:** `tipo: descripción breve` ( `feat:`, `fix:`, `docs:`, `chore:`)
+- **Resolución de desacuerdos:** [se discute en reunión de equipo y se decide por mayoría]
+- **Tablero:** [enlace al tablero Kanban — GitHub Projects / Trello]
+
+##  Flujo de trabajo con Git
+
+```bash
+# 1. Clonar el repositorio
+git clone <url-del-repo>
+
+# 2. Crear una rama por funcionalidad
+git checkout -b feature/nombre-funcionalidad
+
+# 3. Hacer commits significativos y frecuentes
+git commit -m "feat: agrega formulario de registro de visitantes"
+
+# 4. Sincronizar con el remoto antes de subir cambios
+git pull origin main --rebase
+
+# 5. Subir la rama
+git push origin feature/nombre-funcionalidad
+
+# 6. Abrir un Pull Request hacia main
+
+# 7. Resolver conflictos si aparecen, probar, y fusionar (merge)
+```
+
+### Flujo de Pull Request
+
+1. Crear rama desde `main`.
+2. Realizar los cambios y hacer commits.
+3. Abrir un PR describiendo qué se hizo y por qué.
+4. Al menos un integrante del equipo revisa (aprueba o comenta).
+5. Se fusiona el PR a `main` y se elimina la rama.
+
+##  Stack tecnológico
+
+- **Frontend:** React (con Vite) + Tailwind CSS
+- **Backend:** Node.js + Express
+- **Base de datos:** PostgreSQL (con Prisma como ORM) — o MongoDB si prefieren NoSQL
+- **Autenticación:** JWT (JSON Web Tokens)
+- **Control de versiones:** Git / GitHub
+- **Despliegue:** Frontend en Vercel · Backend en Render / Railway · BD en Supabase o Railway
+
+##  Estructura del proyecto
+
+```
+control-housing-estates/
+├── frontend/
+├── backend/
+├── docs/
+└── README.md
+```
+
+## 📌 Estado del proyecto
+
+🚧 En desarrollo — Semana 4 de 15.
