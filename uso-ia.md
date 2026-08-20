@@ -34,16 +34,3 @@
 | **6. ¿Cómo se verificó?** | No fue posible ejecutar `npm install`/`npm test` desde el entorno de la IA (sin acceso a red); queda pendiente que el equipo lo ejecute y registre el resultado real (rojo→verde) aquí. |
 | **7. ¿Cuál fue la decisión humana final?** | Adoptar el esqueleto en memoria como punto de partida y migrar a persistencia real con Prisma/PostgreSQL en la Semana 5, según el cronograma del curso. |
 | **8. ¿Qué riesgo permanece?** | La técnica para garantizar el invariante de negocio en reservas duplicadas (declarado en `problema-duro.md`) todavía no está implementada ni probada — se registra como **Deuda Técnica (DT-01)**. |
-
-## Registro de Uso de IA — Semana [N]
-
-| Pregunta / Campo | Respuesta Registrada |
-|---|---|
-| **1. ¿Qué herramienta se usó?** | |
-| **2. ¿Para qué se usó?** | |
-| **3. ¿Qué se aceptó?** | |
-| **4. ¿Qué se modificó?** | |
-| **5. ¿Qué se rechazó?** | |
-| **6. ¿Cómo se verificó?** | |
-| **7. ¿Cuál fue la decisión humana final?** | |
-| **8. ¿Qué riesgo permanece?** | |
