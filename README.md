@@ -49,12 +49,3 @@ Ejecuta la prueba unitaria de `crearPQRS` y la prueba de integración del flujo 
 - [ ] CI configurado (Semana 6).
 - [ ] Esqueleto fusionado en `main` (acción pendiente del equipo — ver instrucciones abajo).
 
-
-```bash
-git checkout -b feature/esqueleto-inicial
-# copiar aquí el contenido de este paquete sobre su repo
-git add .
-git commit -m "feat: esqueleto ejecutable con flujo PQRS extremo a extremo"
-git push origin feature/esqueleto-inicial
-# abrir Pull Request hacia main, pedir revisión de un integrante, y fusionar
-```
