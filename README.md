@@ -5,7 +5,7 @@ Plataforma web para la administración integral de conjuntos residenciales.
 ## Documentación
 
 - [`docs/vision-producto.md`](./docs/vision-producto.md) — Problema, usuarios, propuesta de valor y alcance del MVP.
-- [`/problema-duro.md`](./problema-duro.md) — Reto técnico, invariante de negocio y evidencia exigida.
+- [`problema-duro.md`](./problema-duro.md) — Reto técnico, invariante de negocio y evidencia exigida.
 - [`historias-usuario.md`](./historias-usuario.md) — Historias de usuario con criterios de aceptación.
 - [`docs/uso-ia.md`](./docs/uso-ia.md) — Política de uso de IA y bitácora del equipo.
 
