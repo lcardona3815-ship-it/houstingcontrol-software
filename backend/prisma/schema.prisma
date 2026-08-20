@@ -1,0 +1,19 @@
+// Esquema inicial — se irá ampliando con Residente, ZonaComun, Reserva, Visitante, etc.
+// (persistencia real: objetivo de la Semana 5, según el cronograma del curso)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model PQRS {
+  id          Int      @id @default(autoincrement())
+  asunto      String
+  descripcion String
+  estado      String   @default("PENDIENTE") // PENDIENTE | EN_PROCESO | RESUELTA
+  creadoEn    DateTime @default(now())
+}
