@@ -1,6 +1,6 @@
 # Problema Duro 
 
- ## Problema Tecnico elegido##
+ ## Problema Tecnico elegido
 
 ** Concurrencia/ Condiciones de carrera:** Prevencion de asignacion duplicada de zonas comunes bajo ejecucion simultanea.
 
