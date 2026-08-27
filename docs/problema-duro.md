@@ -2,7 +2,7 @@
 
  ## Problema Tecnico elegido
 
-** Concurrencia/ Condiciones de carrera:** Prevencion de asignacion duplicada de zonas comunes bajo ejecucion simultanea.
+**Concurrencia/ Condiciones de carrera:** Prevencion de asignacion duplicada de zonas comunes bajo ejecucion simultanea.
 
 ## Descripcion del desfio tecnico
  
