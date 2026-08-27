@@ -24,7 +24,7 @@ La administración de muchos conjuntos residenciales se realiza actualmente medi
 
 > Para administradores y residentes de conjuntos residenciales que necesitan centralizar la gestión de visitantes, paquetería, PQRS y zonas comunes, **Control Housing Estates** es una plataforma web que digitaliza y centraliza estos procesos administrativos. A diferencia de la gestión actual basada en papel y mensajería informal, ofrece una interfaz única, con roles diferenciados, que agiliza la comunicación y el control de acceso.
 
-## Alcance del MVP (10 semanas)
+## Alcance del MVP
 
 **Incluido:**
 - Autenticación y gestión de usuarios por rol.
