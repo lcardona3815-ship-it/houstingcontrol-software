@@ -12,8 +12,8 @@ El reto técnico consiste en garantizar que, ante solicitudes concurrentes, **so
 
 ## Invariante del negocio 
 
-*En ningun momento pueden coexistir dos reservas para la zona comun el mismo dia y la misma hora.
-*Ante reservas simultaneas para la zona comun deseda por el usuario **una(1) debe prosperar y las restantes deben de ser rechazadas o reprogramadas para otra zona horaria disponible**
+- En ningun momento pueden coexistir dos reservas para la zona comun el mismo dia y la misma hora.
+- Ante reservas simultaneas para la zona comun deseda por el usuario **una(1) debe prosperar y las restantes deben de ser rechazadas o reprogramadas para otra zona horaria disponible**
 
 ## Evidencia Especifica Exigida
 
