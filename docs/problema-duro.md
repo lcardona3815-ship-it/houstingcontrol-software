@@ -4,7 +4,7 @@
 
 **Concurrencia/ Condiciones de carrera:** Prevencion de asignacion duplicada de zonas comunes bajo ejecucion simultanea.
 
-## Descripcion del desfio tecnico
+## Descripcion del desafio tecnico
  
 El módulo de **reserva de zonas comunes** es el punto del sistema con mayor riesgo técnico: varios residentes pueden intentar reservar la **misma zona común en el mismo horario al mismo tiempo** (por ejemplo, dos personas reservando el salón social el sábado 6-8pm desde dispositivos distintos, en el mismo instante).
 Si el sistema no controla la concurrencia correctamente, es posible que ambas solicitudes se procesen como exitosas, generando una reserva duplicada — un error que en un sistema real de administración de conjuntos causaría conflictos entre residentes y pérdida de confianza en la plataforma.
