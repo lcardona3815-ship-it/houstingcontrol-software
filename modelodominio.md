@@ -1,5 +1,4 @@
-```
-mermaid
+```mermaid
 classDiagram
     class Usuario {
         +UUID cedula
