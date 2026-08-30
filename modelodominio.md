@@ -3,7 +3,7 @@ classDiagram
     class Usuario {
         +UUID cedula
         +String nombre
-        +String documento
+        +TipoDocumento tipo_documento
         +String credenciales
         +Rol enum_rol
     }
@@ -20,7 +20,7 @@ classDiagram
     class Visitante {
         +UUID cedula
         +String nombre
-        +String documento
+        +TipoDocumento tipo_documento
         +DateTime fecha_prevista
         +DateTime fecha_ingreso
     }
