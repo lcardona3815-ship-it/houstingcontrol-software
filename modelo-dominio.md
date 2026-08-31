@@ -34,7 +34,7 @@ classDiagram
     }
 
     class ZonaComun {
-        +UUID zona_comun_id
+        +UUID id
         +String nombre
         +Int capacidad_maxima
     }
