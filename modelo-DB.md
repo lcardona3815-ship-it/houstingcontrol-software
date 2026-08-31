@@ -23,7 +23,7 @@ erDiagram
     }
 
     zonas_comunes {
-        UUID zona_comun_id PK
+        UUID id PK
         VARCHAR nombre "NOT NULL"
         INT capacidad_maxima "NOT NULL"
     }
@@ -60,7 +60,7 @@ erDiagram
         TIMESTAMP fecha_reserva "Parte del UNIQUE constraint"
         estado_reserva_enum estado "NOT NULL"
         INT version "Bloqueo Optimista"
-        UUID zona_comun_id FK "Parte del UNIQUE constraint"
+        UUID zonas_comunes_id FK "Parte del UNIQUE constraint"
         UUID usuarios_cedula FK
     }
 ```
