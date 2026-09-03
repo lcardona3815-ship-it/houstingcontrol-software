@@ -45,8 +45,7 @@ classDiagram
         +EstadoReserva estado
         +Int version
     }
-    note for Reserva "UNIQUE(zona_comun_id, fecha_reserva)\nBloqueo optimista (@version)"
-
+    note for Reserva "UNIQUE(zona_comun_id, fecha_reserva)"
     class PQRS {
         +UUID id
         +String asunto
