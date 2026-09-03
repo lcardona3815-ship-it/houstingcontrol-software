@@ -15,7 +15,7 @@ erDiagram
     }
 
     usuarios {
-        UUID cedula PK
+        VARCHAR cedula PK
         VARCHAR nombre "NOT NULL"
         tipo_documento_enum tipo_documento "NOT NULL"
         VARCHAR credenciales "NOT NULL"
@@ -29,7 +29,7 @@ erDiagram
     }
 
     visitantes {
-        UUID cedula PK
+        VARCHAR cedula PK
         VARCHAR nombre "NOT NULL"
         tipo_documento_enum tipo_documento "NOT NULL"
         TIMESTAMP fecha_prevista 
