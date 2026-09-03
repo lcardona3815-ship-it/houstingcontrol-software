@@ -1,7 +1,7 @@
 ```mermaid
 classDiagram
     class Usuario {
-        +UUID cedula
+        +Number cedula
         +String nombre
         +TipoDocumento tipo_documento
         +String credenciales
@@ -18,7 +18,7 @@ classDiagram
     }
 
     class Visitante {
-        +UUID cedula
+        +Number cedula
         +String nombre
         +TipoDocumento tipo_documento
         +DateTime fecha_prevista
