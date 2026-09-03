@@ -35,7 +35,7 @@ erDiagram
         tipo_documento_enum tipo_documento "NOT NULL"
         TIMESTAMP fecha_prevista 
         TIMESTAMP fecha_ingreso "NOT NULL"
-        UUID usuarios_cedula FK
+        VARCHAR cedula_usuarios FK
     }
 
     correspondencias {
@@ -44,7 +44,7 @@ erDiagram
         TIMESTAMP fecha_recepcion "NOT NULL"
         estado_paquete_enum estado "NOT NULL"
         VARCHAR nombre_destinatario "NOT NULL"
-        UUID residente_cedula FK
+        VARCHAR cedula_usuarios FK
     }
 
     pqrs {
@@ -53,7 +53,7 @@ erDiagram
         TEXT descripcion "NOT NULL"
         estado_pqrs_enum estado "NOT NULL"
         TEXT respuesta "NOT NULL"
-        UUID usuarios_cedula FK
+        VARCHAR cedula_usuarios FK
     }
 
     reservas {
@@ -61,6 +61,6 @@ erDiagram
         TIMESTAMP fecha_reserva "Parte del UNIQUE constraint"
         estado_reserva_enum estado "NOT NULL"
         UUID zonas_comunes_id FK "Parte del UNIQUE constraint"
-        UUID usuarios_cedula FK
+        VARCHAR cedula_usuarios FK
     }
 ```
