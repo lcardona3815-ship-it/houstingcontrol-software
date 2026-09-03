@@ -18,6 +18,7 @@ classDiagram
     }
 
     class Visitante {
+        +UUID id
         +Number cedula
         +String nombre
         +TipoDocumento tipo_documento
