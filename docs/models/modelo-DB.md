@@ -29,7 +29,8 @@ erDiagram
     }
 
     visitantes {
-        VARCHAR cedula PK
+        UUID id PK
+        VARCHAR cedula "NOT NULL"
         VARCHAR nombre "NOT NULL"
         tipo_documento_enum tipo_documento "NOT NULL"
         TIMESTAMP fecha_prevista 
