@@ -59,7 +59,6 @@ erDiagram
         UUID id PK
         TIMESTAMP fecha_reserva "Parte del UNIQUE constraint"
         estado_reserva_enum estado "NOT NULL"
-        INT version "Bloqueo Optimista"
         UUID zonas_comunes_id FK "Parte del UNIQUE constraint"
         UUID usuarios_cedula FK
     }
