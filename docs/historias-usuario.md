@@ -166,9 +166,3 @@ La prueba debe:
 4. Ejecutarse nuevamente.
 5. Pasar (**GREEN**).
 6. Refactorizar si aplica (**REFACTOR**).
-
-## Stack confirmado (activa el problema duro)
-
-```
-React → Express → Prisma → PostgreSQL
-```
