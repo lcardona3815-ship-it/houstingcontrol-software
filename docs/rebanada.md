@@ -121,4 +121,4 @@ classDiagram
 ### VACÍOS DETECTADOS
 
 *   **Endpoint y Verbo HTTP (`POST /api/pqrs`):** Ningún insumo define la estructura de las rutas web ni el método HTTP. Debería estar en un documento de contratos de API.
-*   **Códigos de Estado HTTP (`HTTP 201 Created`, `HTTP 400 Bad Request`):** Los insumos no detallan qué códigos deben retornarse. Spring Boot por defecto puede devolver un `200 OK` en un alta si no se configura explícitamente el `ResponseEntity` para un `201 Created`.deben retornarse para el éxito de la operación o para el manejo de excepciones de validación (entradas inválidas). Debería estar en los criterios de aceptación técnicos o en una especificación Swagger/OpenAPI.
+*   **Códigos de Estado HTTP (`HTTP 201 Created`, `HTTP 400 Bad Request`):** Los insumos no detallan qué códigos deben retornarse. Spring Boot por defecto puede devolver un `200 OK` en un alta si no se configura explícitamente el `ResponseEntity` para un `201 Created`.
