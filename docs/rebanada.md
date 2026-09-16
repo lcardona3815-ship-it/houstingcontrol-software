@@ -41,18 +41,18 @@ sequenceDiagram
         B-->>R: HTTP 201 Created (Objeto PQRS creado)
     end
 ```
-# TAREA 3 — Diagrama de clases (Derivado)
+# TAREA 3 — Diagrama de clases (Derivado - Stack Spring Boot/JPA)
 
 ```mermaid
 classDiagram
-    %% Capa: Infraestructura (Web / HTTP)
+    %% Capa: Infraestructura (Web / REST)
     class PqrsController {
-        <<Implementación>>
+        <<@RestController>>
         <<Capa: / Delivery Infraestructura>>
-        +crearPqrs(req: CrearPqrsDTO): Response
+        +crearPqrs(dto: CrearPqrsDTO): ResponseEntity~Pqrs~
     }
 
-    %% Capa: Aplicación
+    %% Capa: Aplicación / Transferencia
     class CrearPqrsDTO {
         <<Data Object Transfer>>
         <<Capa: Aplicación>>
@@ -61,9 +61,9 @@ classDiagram
         +String cedula_usuarios
     }
 
-    %% Capa: Dominio
-    class PQRS {
-        <<Entidad>>
+    %% Capa: Dominio / Persistencia
+    class Pqrs {
+        <<@Entity>>
         <<Capa: Dominio>>
         +UUID id
         +String asunto
@@ -72,25 +72,18 @@ classDiagram
         +String cedula_usuarios
     }
 
-    class IPqrsRepository {
-        <<Interfaz - Puerto>>
-        <<Capa: Dominio>>
-        +guardar(pqrs: PQRS): PQRS
-    }
-
-    %% Capa: Infraestructura (Persistencia)
-    class PostgresPqrsRepository {
-        <<Implementación - Adaptador>>
+    %% Capa: Infraestructura (Repositorio)
+    class PqrsRepository {
+        <<Interfaz - @Repository>>
         <<Capa: / Infraestructura Persistencia>>
-        +guardar(pqrs: PQRS): PQRS
+        +save(entity: Pqrs): Pqrs
     }
 
     %% Relaciones
     PqrsController ..> CrearPqrsDTO : Recibe (POST /api/pqrs)
-    PqrsController ..> IPqrsRepository : Invoca regla de estado
-    PostgresPqrsRepository ..|> IPqrsRepository : Implementa
-    PostgresPqrsRepository ..> PQRS : Mapea e inserta (SQL)
-    PqrsController ..> PQRS : Retorna (HTTP 201)
+    PqrsController ..> PqrsRepository : Invoca persistencia
+    PqrsRepository ..> Pqrs : Mapea e inserta (SQL vía JPA)
+    PqrsController ..> Pqrs : Aplica regla "PENDIENTE" y Retorna (HTTP 201)
 ```
 # TAREA 4 — Contrato de la prueba única
 
@@ -117,15 +110,15 @@ classDiagram
 | Elemento del diagrama | Archivo de origen | Línea o sección que lo respalda |
 | :--- | :--- | :--- |
 | Actor: Residente | `historias-usuario.md` | HU-07 — Registrar PQRS ("Como residente, quiero registrar una PQRS")[cite: 1]. |
-| Participante: Backend (Express) | `historias-usuario.md` | Flujo trivial de extremo a extremo / Stack confirmado ("Express")[cite: 1]. |
+| Participante: Backend (Spring Boot) | `historias-usuario.md` | Flujo trivial de extremo a extremo / Stack confirmado (actualizado a Java/Spring Boot)[cite: 1]. |
 | Participante: Base de Datos (PostgreSQL) | `historias-usuario.md` | Stack confirmado ("PostgreSQL")[cite: 1]. |
 | Atributos de entrada: `asunto`, `descripcion` | `historias-usuario.md` | HU-07 — Registrar PQRS ("registrar asunto", "escribir una descripción")[cite: 1]. |
 | Llave foránea de entrada: `cedula_usuarios` | `modelo-DB.md` | Tabla `pqrs` (`VARCHAR cedula_usuarios FK`)[cite: 4]. |
-| Regla de negocio: Estado inicial "PENDIENTE" | `historias-usuario.md` | HU-07 — Registrar PQRS ("Inicialmente queda en estado `PENDIENTE`") y Primera prueba unitaria (TDD)[cite: 1]. |
-| Transacción de persistencia: `INSERT INTO pqrs` | `modelo-DB.md` | Tabla `pqrs`[cite: 4]. |
-| Identificador: Generación de UUID | `modelo-DB.md` | Tabla `pqrs` (`UUID id PK`)[cite: 4]. |
+| Regla de negocio: Estado inicial "PENDIENTE" | `historias-usuario.md` | HU-07 — Registrar PQRS ("Inicialmente queda en estado `PENDIENTE`")[cite: 1]. |
+| Transacción de persistencia: `INSERT INTO pqrs` | `modelo-DB.md` | Tabla `pqrs` (Generado dinámicamente por JPA/Hibernate)[cite: 4]. |
+| Identificador: Generación de UUID | `modelo-DB.md` | Tabla `pqrs` (`UUID id PK` - Mapeado con `@GeneratedValue` en JPA)[cite: 4]. |
 
 ### VACÍOS DETECTADOS
 
-*   **Endpoint y Verbo HTTP (`POST /api/pqrs`):** Ningún insumo define la estructura de las rutas web ni el método HTTP para interactuar con el backend. Debería estar en un documento de contratos de API o diseño de integración.
-*   **Códigos de Estado HTTP (`HTTP 201 Created`, `HTTP 400 Bad Request`):** Los insumos no detallan qué códigos de protocolo deben retornarse para el éxito de la operación o para el manejo de excepciones de validación (entradas inválidas). Debería estar en los criterios de aceptación técnicos o en una especificación Swagger/OpenAPI.
+*   **Endpoint y Verbo HTTP (`POST /api/pqrs`):** Ningún insumo define la estructura de las rutas web ni el método HTTP. Debería estar en un documento de contratos de API.
+*   **Códigos de Estado HTTP (`HTTP 201 Created`, `HTTP 400 Bad Request`):** Los insumos no detallan qué códigos deben retornarse. Spring Boot por defecto puede devolver un `200 OK` en un alta si no se configura explícitamente el `ResponseEntity` para un `201 Created`.deben retornarse para el éxito de la operación o para el manejo de excepciones de validación (entradas inválidas). Debería estar en los criterios de aceptación técnicos o en una especificación Swagger/OpenAPI.
