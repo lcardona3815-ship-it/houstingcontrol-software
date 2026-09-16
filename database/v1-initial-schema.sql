@@ -55,7 +55,7 @@ CREATE TABLE pqrs (
     asunto VARCHAR(255) NOT NULL,
     descripcion TEXT NOT NULL,
     estado estado_pqrs_enum NOT NULL,
-    respuesta TEXT NOT NULL,
+    respuesta TEXT,
     cedula_usuarios VARCHAR(50) REFERENCES usuarios(cedula) ON DELETE CASCADE
 );
 
