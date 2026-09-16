@@ -1,0 +1,3 @@
+./mvnw spring-boot:run
+
+Invoke-RestMethod -Uri http://localhost:8080/api/pqrs -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"asunto": "Filtracion de agua", "descripcion": "Humedad en la pared que da hacia el estacionamiento", "cedula_usuarios": "1010000005"}'
