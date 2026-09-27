@@ -47,3 +47,5 @@ Toda la documentación técnica y de negocio se encuentra estructurada en las si
 - [`docs/problema-duro.md`](./docs/problema-duro.md) — Reto técnico, invariante de negocio y evidencia exigida.
 - [`docs/historias-usuario.md`](./docs/historias-usuario.md) — Historias de usuario con criterios de aceptación.
 - [`docs/uso-ia.md`](./docs/uso-ia.md) — Política de uso de IA y bitácora del equipo.
+- [`docs/rebanada.md`](/docs/rebanada.md) - Esqueleto Andante: Diagramas de secuencia, clases y trazabilidad técnica.
+- [`database`](/database) - Scripts DDL e instrucciones de inserción de datos para pruebas.
