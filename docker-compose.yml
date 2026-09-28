@@ -12,7 +12,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      # Esta es la instrucción que inyecta tu script
+      # Esta es la instrucción que inyecta las instrucciones DDL
       - ./database/v1-initial-schema.sql:/docker-entrypoint-initdb.d/v1-initial-schema.sql
       # Esta línea garantiza que los datos no se borren al apagar el PC
       - postgres_data:/var/lib/postgresql/data
