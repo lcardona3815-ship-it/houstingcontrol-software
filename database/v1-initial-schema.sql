@@ -38,7 +38,7 @@ CREATE TABLE visitantes (
     tipo_documento tipo_documento_enum NOT NULL,
     fecha_prevista TIMESTAMP,
     fecha_ingreso TIMESTAMP NOT NULL,
-    cedula_usuario VARCHAR(50) REFERENCES usuarios(cedula) ON DELETE CASCADE
+    cedula_usuarios VARCHAR(50) REFERENCES usuarios(cedula) ON DELETE CASCADE
 );
 
 CREATE TABLE correspondencias (
@@ -47,7 +47,7 @@ CREATE TABLE correspondencias (
     fecha_recepcion TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     estado estado_paquete_enum NOT NULL,
     nombre_destinatario VARCHAR(255) NOT NULL,
-    cedula_usuario VARCHAR(50) REFERENCES usuarios(cedula) ON DELETE CASCADE
+    cedula_usuarios VARCHAR(50) REFERENCES usuarios(cedula) ON DELETE CASCADE
 );
 
 CREATE TABLE pqrs (
@@ -56,15 +56,15 @@ CREATE TABLE pqrs (
     descripcion TEXT NOT NULL,
     estado estado_pqrs_enum NOT NULL,
     respuesta TEXT,
-    cedula_usuario VARCHAR(50) REFERENCES usuarios(cedula) ON DELETE CASCADE
+    cedula_usuarios VARCHAR(50) REFERENCES usuarios(cedula) ON DELETE CASCADE
 );
 
 CREATE TABLE reservas (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     fecha_reserva TIMESTAMP NOT NULL,
     estado estado_reserva_enum NOT NULL,
-    zona_comun_id UUID NOT NULL REFERENCES zonas_comunes(id) ON DELETE CASCADE,
-    cedula_usuario VARCHAR(50) NOT NULL REFERENCES usuarios(cedula) ON DELETE CASCADE,
+    zonas_comunes_id UUID NOT NULL REFERENCES zonas_comunes(id) ON DELETE CASCADE,
+    cedula_usuarios VARCHAR(50) NOT NULL REFERENCES usuarios(cedula) ON DELETE CASCADE,
     
     -- Restricción UNIQUE para prevención de concurrencia
     CONSTRAINT unique_reserva_zona_fecha UNIQUE (zonas_comunes_id, fecha_reserva)
