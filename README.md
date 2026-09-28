@@ -41,7 +41,7 @@ Para ejecutar este proyecto localmente, necesitas instalar:
    ```
    El servidor iniciará localmente y estará disponible en http://localhost:8080
 
-##Pruebas funcionales
+## Pruebas funcionales
 
 Para probar la creación de una PQRS de extremo a extremo, asegúrate de tener al menos un usuario registrado en tu base de datos y ejecuta el siguiente comando en PowerShell:
 
@@ -70,4 +70,5 @@ Toda la documentación técnica y de negocio se encuentra estructurada en las si
 - [`docs/historias-usuario.md`](./docs/historias-usuario.md) — Historias de usuario con criterios de aceptación.
 - [`docs/uso-ia.md`](./docs/uso-ia.md) — Política de uso de IA y bitácora del equipo.
 - [`docs/rebanada.md`](/docs/rebanada.md) - Esqueleto Andante: Diagramas de secuencia, clases y trazabilidad técnica.
+- [`docs/models`](/docs/models) - Modelo de la base de datos y modelo de dominio.
 - [`database`](/database) - Scripts DDL e instrucciones de inserción de datos para pruebas.
