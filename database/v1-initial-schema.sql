@@ -37,7 +37,7 @@ CREATE TABLE visitantes (
     nombre VARCHAR(255) NOT NULL,
     tipo_documento tipo_documento_enum NOT NULL,
     fecha_prevista TIMESTAMP,
-    fecha_ingreso TIMESTAMP NOT NULL,
+    fecha_ingreso TIMESTAMP,
     cedula_usuarios VARCHAR(50) REFERENCES usuarios(cedula) ON DELETE CASCADE
 );
 
