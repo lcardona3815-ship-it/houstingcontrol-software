@@ -41,7 +41,29 @@ Para ejecutar este proyecto localmente, necesitas instalar:
    ```
    El servidor iniciará localmente y estará disponible en http://localhost:8080
 
+##Pruebas funcionales
+
+Para probar la creación de una PQRS de extremo a extremo, asegúrate de tener al menos un usuario registrado en tu base de datos y ejecuta el siguiente comando en PowerShell:
+
+```powershell
+Invoke-RestMethod -Uri http://localhost:8080/api/pqrs -Method POST -Headers @{"Content-Type"="application/json; charset=utf-8"} -Body '{"asunto": "Fallo electrico", "descripcion": "Lampara del pasillo fundida", "cedula_usuarios": "[CEDULA_VALIDA]"}'
+```
+
+Respuesta exitosa esperada (HTTP 201 Created):
+
+```json
+{
+  "id": "e4b3c2a1-1234-5678-9abc-def012345678",
+  "asunto": "Fallo electrico",
+  "descripcion": "Lampara del pasillo fundida",
+  "estado": "PENDIENTE",
+  "cedula_usuarios": "1010000004",
+  "fechaHora": "2026-09-15T21:05:15.123"
+}
+```
+
 ## Documentación
+
 Toda la documentación técnica y de negocio se encuentra estructurada en las siguientes carpetas:
 - [`docs/vision-producto.md`](./docs/vision-producto.md) — Problema, usuarios, propuesta de valor y alcance del MVP.
 - [`docs/problema-duro.md`](./docs/problema-duro.md) — Reto técnico, invariante de negocio y evidencia exigida.
