@@ -47,3 +47,27 @@ Toda la documentación técnica y de negocio se encuentra estructurada en las si
 - [`docs/problema-duro.md`](./docs/problema-duro.md) — Reto técnico, invariante de negocio y evidencia exigida.
 - [`docs/historias-usuario.md`](./docs/historias-usuario.md) — Historias de usuario con criterios de aceptación.
 - [`docs/uso-ia.md`](./docs/uso-ia.md) — Política de uso de IA y bitácora del equipo.
+
+## Historias de usuario implementadas
+
+### HU-04 — Registrador de correspondencia
+
+**Como** portero, **quiero** registrar un paquete recibido **para** informar al residente y mantener trazabilidad.
+
+**Qué hace:**
+- Registra el destinatario, que siempre debe ser un usuario registrado.
+- Registra la descripción del paquete.
+- Registra la fecha de recepción.
+- Asocia el paquete a un estado: `RECIBIDO → NOTIFICADO → ENTREGADO`.
+
+**Pruebas:**
+- Unitarias: `backend/walkin-skeleton/software/src/test/java/com/housingcontrol/software/application/service/CorrespondenciaServiceTest.java`
+- Integración: `backend/walkin-skeleton/software/src/test/java/com/housingcontrol/software/infrastructure/controller/`
+
+**Cómo ejecutar las pruebas:**
+```bash
+cd backend/walkin-skeleton/software
+mvn test
+```
+
+**Commit de la implementación:** [`108c6f7`](https://github.com/lcardona3815-ship-it/houstingcontrol-software/commit/108c6f7096dd7d52105caa624d6c8f736b72eb49)
