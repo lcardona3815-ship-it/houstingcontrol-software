@@ -1,0 +1,20 @@
+[INFO] Running com.housingcontrol.software.application.service.AuthServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.831 s -- in com.housingcontrol.software.application.service.AuthServiceTest
+[INFO] Running com.housingcontrol.software.application.service.CorrespondenciaServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.244 s -- in com.housingcontrol.software.application.service.CorrespondenciaServiceTest
+[INFO] Running com.housingcontrol.software.application.service.VisitanteServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.188 s -- in com.housingcontrol.software.application.service.VisitanteServiceTest
+[INFO] Running com.housingcontrol.software.infrastructure.controller.AuthControllerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.186 s -- in com.housingcontrol.software.infrastructure.controller.AuthControllerTest
+[INFO] Running com.housingcontrol.software.infrastructure.controller.CorrespondenciaControllerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.090 s -- in com.housingcontrol.software.infrastructure.controller.CorrespondenciaControllerTest
+[INFO] Running com.housingcontrol.software.infrastructure.controller.CorrespondenciaIntegrationTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.47 s -- in com.housingcontrol.software.infrastructure.controller.CorrespondenciaIntegrationTest
+[INFO] Running com.housingcontrol.software.infrastructure.controller.PqrsControllerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.140 s -- in com.housingcontrol.software.infrastructure.controller.PqrsControllerTest
+[INFO] Running com.housingcontrol.software.infrastructure.controller.VisitanteControllerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.059 s -- in com.housingcontrol.software.infrastructure.controller.VisitanteControllerTest
+[INFO] Running com.housingcontrol.software.SoftwareApplicationTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.053 s -- in com.housingcontrol.software.SoftwareApplicationTests
+[INFO] Tests run: 20, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
