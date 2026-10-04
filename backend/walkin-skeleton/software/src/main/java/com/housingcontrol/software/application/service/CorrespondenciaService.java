@@ -7,6 +7,7 @@ import com.housingcontrol.software.domain.Usuario;
 import com.housingcontrol.software.infrastructure.repository.CorrespondenciaRepository;
 import com.housingcontrol.software.infrastructure.repository.UsuarioRepository;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -36,6 +37,23 @@ public class CorrespondenciaService {
         correspondencia.setEstado(EstadoPaquete.RECIBIDO.name());
 
         return correspondenciaRepository.save(correspondencia);
+    }
+
+    public Correspondencia notificar(UUID id) {
+        Correspondencia correspondencia = buscar(id);
+        correspondencia.notificar();
+        return correspondenciaRepository.save(correspondencia);
+    }
+
+    public Correspondencia entregar(UUID id) {
+        Correspondencia correspondencia = buscar(id);
+        correspondencia.entregar();
+        return correspondenciaRepository.save(correspondencia);
+    }
+
+    private Correspondencia buscar(UUID id) {
+        return correspondenciaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("El paquete no existe"));
     }
 
     private boolean esVacio(String texto) {

@@ -45,4 +45,23 @@ public class Correspondencia {
 
     public String getCedulaUsuarios() { return cedulaUsuarios; }
     public void setCedulaUsuarios(String cedulaUsuarios) { this.cedulaUsuarios = cedulaUsuarios; }
+
+    /** RECIBIDO -> NOTIFICADO. Cualquier otro estado de origen es inválido. */
+    public void notificar() {
+        cambiarEstado(EstadoPaquete.RECIBIDO, EstadoPaquete.NOTIFICADO);
+    }
+
+    /** NOTIFICADO -> ENTREGADO. No se puede entregar sin haber notificado. */
+    public void entregar() {
+        cambiarEstado(EstadoPaquete.NOTIFICADO, EstadoPaquete.ENTREGADO);
+    }
+
+    private void cambiarEstado(EstadoPaquete esperado, EstadoPaquete nuevo) {
+        if (!esperado.name().equals(this.estado)) {
+            throw new IllegalStateException(
+                "Transición inválida: el paquete está " + this.estado
+                + " y solo puede pasar a " + nuevo.name() + " desde " + esperado.name());
+        }
+        this.estado = nuevo.name();
+    }
 }
