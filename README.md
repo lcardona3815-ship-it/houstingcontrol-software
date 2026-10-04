@@ -84,7 +84,16 @@ mvn test
 | Estado `NOTIFICADO → ENTREGADO` | `entregaPaqueteNotificadoYPasaAEntregado` |
 | No se salta de estado | `rechazaEntregarSiElPaqueteNoFueNotificado` |
 
-**Resultado de la ejecución** (`./mvnw test`): 25 pruebas del proyecto, 0 fallos, `BUILD SUCCESS`.
-De ellas, 13 son de la HU-04: `CorrespondenciaServiceTest` (3), `CorrespondenciaEstadoServiceTest` (5), `CorrespondenciaControllerTest` (2) y `CorrespondenciaIntegrationTest` (3).
+**Resultado de la ejecución** (`./mvnw test`): 31 pruebas del proyecto, 0 fallos, `BUILD SUCCESS`.
+De ellas, 19 son de la HU-04: `CorrespondenciaServiceTest` (3), `CorrespondenciaEstadoServiceTest` (5), `CorrespondenciaControllerTest` (2), `CorrespondenciaEstadoControllerTest` (6) y `CorrespondenciaIntegrationTest` (3).
 
 Evidencia completa: [`docs/evidencia-hu04.txt`](docs/evidencia-hu04.txt)
+
+**Endpoints de cambio de estado**
+
+| Endpoint | Resultado | Prueba que lo verifica |
+|---|---|---|
+| `PATCH /api/correspondencias/{id}/notificar` | `200` y estado `NOTIFICADO` | `notificarPaqueteValidoResponde200` |
+| `PATCH /api/correspondencias/{id}/entregar` | `200` y estado `ENTREGADO` | `entregarPaqueteValidoResponde200` |
+| Paquete inexistente | `404` | `notificarPaqueteInexistenteResponde404` |
+| Salto de estado inválido | `409` | `entregarSinHaberNotificadoResponde409` |
