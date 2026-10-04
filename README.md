@@ -84,8 +84,8 @@ mvn test
 | Estado `NOTIFICADO → ENTREGADO` | `entregaPaqueteNotificadoYPasaAEntregado` |
 | No se salta de estado | `rechazaEntregarSiElPaqueteNoFueNotificado` |
 
-**Resultado de la ejecución** (`./mvnw test`): 31 pruebas del proyecto, 0 fallos, `BUILD SUCCESS`.
-De ellas, 19 son de la HU-04: `CorrespondenciaServiceTest` (3), `CorrespondenciaEstadoServiceTest` (5), `CorrespondenciaControllerTest` (2), `CorrespondenciaEstadoControllerTest` (6) y `CorrespondenciaIntegrationTest` (3).
+**Resultado de la ejecución** (`./mvnw test`): 35 pruebas del proyecto, 0 fallos, `BUILD SUCCESS`.
+De ellas, 23 son de la HU-04: `CorrespondenciaServiceTest` (3), `CorrespondenciaEstadoServiceTest` (5), `CorrespondenciaControllerTest` (2), `CorrespondenciaEstadoControllerTest` (6), `CorrespondenciaIntegrationTest` (3) y `CorrespondenciaEstadoIntegrationTest` (4).
 
 Evidencia completa: [`docs/evidencia-hu04.txt`](docs/evidencia-hu04.txt)
 
@@ -97,3 +97,12 @@ Evidencia completa: [`docs/evidencia-hu04.txt`](docs/evidencia-hu04.txt)
 | `PATCH /api/correspondencias/{id}/entregar` | `200` y estado `ENTREGADO` | `entregarPaqueteValidoResponde200` |
 | Paquete inexistente | `404` | `notificarPaqueteInexistenteResponde404` |
 | Salto de estado inválido | `409` | `entregarSinHaberNotificadoResponde409` |
+
+**Prueba de integración del flujo completo** (HTTP → servicio → JPA → H2, sin mocks)
+
+| Verificación | Prueba |
+|---|---|
+| Registrar, notificar y entregar; el estado queda guardado en cada paso | `flujoCompletoRecibidoNotificadoEntregadoQuedaGuardadoEnBaseDeDatos` |
+| Entregar sin notificar → `409` y el estado sigue `RECIBIDO` | `entregarSinNotificarResponde409YElEstadoSigueRecibido` |
+| Notificar dos veces → `409` y el estado sigue `NOTIFICADO` | `notificarDosVecesResponde409YElEstadoSigueNotificado` |
+| Paquete inexistente → `404` | `cambiarEstadoDePaqueteInexistenteResponde404` |
