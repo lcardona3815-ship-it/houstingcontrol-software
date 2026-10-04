@@ -71,3 +71,20 @@ mvn test
 ```
 
 **Commit de la implementación:** [`108c6f7`](https://github.com/lcardona3815-ship-it/houstingcontrol-software/commit/108c6f7096dd7d52105caa624d6c8f736b72eb49)
+
+**Trazabilidad: criterio de aceptación → prueba**
+
+| Criterio de aceptación | Prueba que lo verifica |
+|---|---|
+| Se registra destinatario | `registraPaqueteConEstadoRecibidoYFechaDeRecepcion` |
+| Se rechaza si el destinatario no existe | `rechazaSiElDestinatarioNoExiste` |
+| Se exige la descripción | `rechazaSiFaltaLaDescripcion` |
+| Se registra fecha de recepción | `registraPaqueteConEstadoRecibidoYFechaDeRecepcion` |
+| Estado `RECIBIDO → NOTIFICADO` | `notificaPaqueteRecibidoYPasaANotificado` |
+| Estado `NOTIFICADO → ENTREGADO` | `entregaPaqueteNotificadoYPasaAEntregado` |
+| No se salta de estado | `rechazaEntregarSiElPaqueteNoFueNotificado` |
+
+**Resultado de la ejecución** (`./mvnw test`): 25 pruebas del proyecto, 0 fallos, `BUILD SUCCESS`.
+De ellas, 13 son de la HU-04: `CorrespondenciaServiceTest` (3), `CorrespondenciaEstadoServiceTest` (5), `CorrespondenciaControllerTest` (2) y `CorrespondenciaIntegrationTest` (3).
+
+Evidencia completa: [`docs/evidencia-hu04.txt`](docs/evidencia-hu04.txt)
