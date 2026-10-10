@@ -1,0 +1,58 @@
+# Evidencia HU-04 - 2026-10-10 00:40
+
+## 1. Pruebas  (./mvnw -B verify)
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.940 s -- in com.housingcontrol.software.application.service.AuthServiceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.359 s -- in com.housingcontrol.software.application.service.CorrespondenciaEstadoServiceTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.090 s -- in com.housingcontrol.software.application.service.CorrespondenciaServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.143 s -- in com.housingcontrol.software.application.service.VisitanteServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.196 s -- in com.housingcontrol.software.infrastructure.controller.AuthControllerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.074 s -- in com.housingcontrol.software.infrastructure.controller.CorrespondenciaControllerTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.101 s -- in com.housingcontrol.software.infrastructure.controller.CorrespondenciaEstadoControllerTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.19 s -- in com.housingcontrol.software.infrastructure.controller.CorrespondenciaEstadoIntegrationTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.776 s -- in com.housingcontrol.software.infrastructure.controller.CorrespondenciaIntegrationTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.156 s -- in com.housingcontrol.software.infrastructure.controller.PqrsControllerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.062 s -- in com.housingcontrol.software.infrastructure.controller.VisitanteControllerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.082 s -- in com.housingcontrol.software.SoftwareApplicationTests
+[INFO] Tests run: 36, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
+
+Clases de HU-04:
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.359 s -- in com.housingcontrol.software.application.service.CorrespondenciaEstadoServiceTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.090 s -- in com.housingcontrol.software.application.service.CorrespondenciaServiceTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.074 s -- in com.housingcontrol.software.infrastructure.controller.CorrespondenciaControllerTest
+Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.101 s -- in com.housingcontrol.software.infrastructure.controller.CorrespondenciaEstadoControllerTest
+Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.19 s -- in com.housingcontrol.software.infrastructure.controller.CorrespondenciaEstadoIntegrationTest
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.776 s -- in com.housingcontrol.software.infrastructure.controller.CorrespondenciaIntegrationTest
+
+## 2. Arranque con el perfil h2 (sin Docker)
+Aplicacion arriba. Consola H2 responde en http://localhost:8080/h2-console
+
+## 3. Flujo de HU-04
+$ POST /api/correspondencias   {descripcion, cedula_usuarios=1010000002}
+{"cedulaUsuarios":"1010000002","descripcion":"paquete mediano","estado":"RECIBIDO","fechaRecepcion":"2026-10-10T00:41:32.7085135","id":"c94b99f9-ec68-446a-b101-b2078beaa416","nombreDestinatario":"María Fernanda López"}
+  OK     registrar (esperado 201)
+  OK     estado inicial (esperado "estado":"RECIBIDO")
+$ PATCH /api/correspondencias/c94b99f9-ec68-446a-b101-b2078beaa416/notificar
+{"cedulaUsuarios":"1010000002","descripcion":"paquete mediano","estado":"NOTIFICADO","fechaRecepcion":"2026-10-10T00:41:32.708514","id":"c94b99f9-ec68-446a-b101-b2078beaa416","nombreDestinatario":"María Fernanda López"}
+  OK     notificar (esperado 200)
+  OK     estado (esperado "estado":"NOTIFICADO")
+$ PATCH /api/correspondencias/c94b99f9-ec68-446a-b101-b2078beaa416/entregar
+{"cedulaUsuarios":"1010000002","descripcion":"paquete mediano","estado":"ENTREGADO","fechaRecepcion":"2026-10-10T00:41:32.708514","id":"c94b99f9-ec68-446a-b101-b2078beaa416","nombreDestinatario":"María Fernanda López"}
+  OK     entregar (esperado 200)
+  OK     estado (esperado "estado":"ENTREGADO")
+
+## 4. Errores que prometen los criterios
+  OK     entregar un paquete ya entregado (esperado 409)
+  OK     notificar un paquete ya entregado (esperado 409)
+  OK     paquete inexistente (esperado 404)
+  OK     sin descripcion (esperado 400)
+  OK     sin destinatario (esperado 400)
+  OK     destinatario que no existe (esperado 400)
+
+## 5. Base de datos
+Abre http://localhost:8080/h2-console
+  JDBC URL: jdbc:h2:mem:housing;MODE=PostgreSQL;DB_CLOSE_DELAY=-1   User: sa   Password: (vacio)
+  Consulta: SELECT * FROM CORRESPONDENCIAS;
+Toma la captura de esa consulta y guardala en docs/ junto a este archivo.
+
+RESULTADO: todas las verificaciones OK

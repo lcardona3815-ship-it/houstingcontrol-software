@@ -1,0 +1,26 @@
+[INFO] Running com.housingcontrol.software.application.service.AuthServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.977 s -- in com.housingcontrol.software.application.service.AuthServiceTest
+[INFO] Running com.housingcontrol.software.application.service.CorrespondenciaEstadoServiceTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.321 s -- in com.housingcontrol.software.application.service.CorrespondenciaEstadoServiceTest
+[INFO] Running com.housingcontrol.software.application.service.CorrespondenciaServiceTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.125 s -- in com.housingcontrol.software.application.service.CorrespondenciaServiceTest
+[INFO] Running com.housingcontrol.software.application.service.VisitanteServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.160 s -- in com.housingcontrol.software.application.service.VisitanteServiceTest
+[INFO] Running com.housingcontrol.software.infrastructure.controller.AuthControllerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.204 s -- in com.housingcontrol.software.infrastructure.controller.AuthControllerTest
+[INFO] Running com.housingcontrol.software.infrastructure.controller.CorrespondenciaControllerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.125 s -- in com.housingcontrol.software.infrastructure.controller.CorrespondenciaControllerTest
+[INFO] Running com.housingcontrol.software.infrastructure.controller.CorrespondenciaEstadoControllerTest
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.190 s -- in com.housingcontrol.software.infrastructure.controller.CorrespondenciaEstadoControllerTest
+[INFO] Running com.housingcontrol.software.infrastructure.controller.CorrespondenciaEstadoIntegrationTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.31 s -- in com.housingcontrol.software.infrastructure.controller.CorrespondenciaEstadoIntegrationTest
+[INFO] Running com.housingcontrol.software.infrastructure.controller.CorrespondenciaIntegrationTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.127 s -- in com.housingcontrol.software.infrastructure.controller.CorrespondenciaIntegrationTest
+[INFO] Running com.housingcontrol.software.infrastructure.controller.PqrsControllerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.164 s -- in com.housingcontrol.software.infrastructure.controller.PqrsControllerTest
+[INFO] Running com.housingcontrol.software.infrastructure.controller.VisitanteControllerTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.064 s -- in com.housingcontrol.software.infrastructure.controller.VisitanteControllerTest
+[INFO] Running com.housingcontrol.software.SoftwareApplicationTests
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.070 s -- in com.housingcontrol.software.SoftwareApplicationTests
+[INFO] Tests run: 36, Failures: 0, Errors: 0, Skipped: 0
+[INFO] BUILD SUCCESS
