@@ -104,6 +104,8 @@ De ellas, 24 son de la HU-04: `CorrespondenciaServiceTest` (4), `Correspondencia
 
 Evidencia completa: [`docs/evidencia-hu04.txt`](docs/evidencia-hu04.txt)
 
+Descripción técnica con el código Java: [`docs/descripcion-tecnica-hu04.md`](docs/descripcion-tecnica-hu04.md)
+
 Guía técnica de HU-04: [`docs/guia-tecnica-hu04.md`](docs/guia-tecnica-hu04.md) · Demostración reproducible (pruebas + API + base de datos): `bash scripts/evidencia-hu04.sh` → `docs/evidencia-hu04-demo.txt`
 
 **Endpoints de cambio de estado**

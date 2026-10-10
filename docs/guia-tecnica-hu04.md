@@ -182,7 +182,7 @@ Este proyecto no tiene una carpeta de excepciones propias. El servicio lanza dos
 | `IllegalArgumentException` | 400 en `registrar` · 404 en `notificar`/`entregar` | datos inválidos · paquete inexistente |
 | `IllegalStateException` | 409 | transición de estado inválida |
 
-Ojo: un mismo tipo (`IllegalArgumentException`) significa cosas distintas según la ruta. Está registrado como deuda técnica (`docs/deuda-tecnica.md`, punto 7).
+Ojo: un mismo tipo (`IllegalArgumentException`) significa cosas distintas según la ruta. Está registrado como deuda técnica (`docs/deuda-tecnica.md`, punto 9).
 
 ### 4.4 Un detalle de diseño
 La entidad guarda el estado como texto (`String`), no como enum de Java; `EstadoPaquete` aporta los nombres válidos. En PostgreSQL la columna es un `ENUM`; por eso la URL de conexión lleva `?stringtype=unspecified`.

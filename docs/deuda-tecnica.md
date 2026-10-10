@@ -51,7 +51,7 @@ Registro de las limitaciones conocidas de la implementación actual, con su impa
 - Si el script SQL define una restricción `CHECK` o un tipo enumerado para `estado`.
 - Si los endpoints de cambio de estado deben restringirse al rol de portería. Esta revisión no incluyó seguridad.
 
-## 7. Un mismo tipo de excepción significa dos errores distintos
+## 9. Un mismo tipo de excepción significa dos errores distintos
 
 - **Qué pasa:** el servicio lanza `IllegalArgumentException` tanto para datos inválidos (`registrar`, que el controlador traduce a 400) como para «el paquete no existe» (`notificar` y `entregar`, que traduce a 404). El significado depende de qué método se llamó, no del tipo de error.
 - **Impacto:** una prueba que solo comprueba el tipo de la excepción puede pasar por la razón equivocada. Ya ocurrió: `rechazaSiFaltaLaDescripcion` seguía en verde aunque se borrara la validación de la descripción, porque el repositorio falso devolvía "usuario vacío" y se lanzaba otra `IllegalArgumentException`. Se corrigió comprobando el mensaje y que no se consulte al usuario.
