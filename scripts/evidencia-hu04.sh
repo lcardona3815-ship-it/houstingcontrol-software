@@ -47,15 +47,23 @@ log ""
 log "## 2. Arranque con el perfil h2 (sin Docker)"
 JAR="$(ls target/software-*.jar 2>/dev/null | grep -v '\.original$' | head -1)"
 if [ -z "$JAR" ]; then log "No encontre el .jar en target/"; exit 1; fi
+if curl -s -o /dev/null --max-time 3 "$BASE/"; then
+  log "ERROR: ya hay una aplicacion respondiendo en el puerto 8080 (otra app o una ejecucion anterior)."
+  log "  Para ver cual es:  netstat -ano | grep \":8080 \" | grep LISTENING   (el ultimo numero es el PID)"
+  log "  Para cerrarla:     taskkill //PID <PID> //F      (o el cuadro rojo de la consola de Eclipse)"
+  log "  Cuando el puerto este libre, vuelve a ejecutar este script."
+  exit 1
+fi
 java -jar "$JAR" --spring.profiles.active=h2 > "$TMP_APP" 2>&1 &
 PID=$!
 LISTA=0
 for _ in $(seq 1 90); do
   C="$(curl -s -o /dev/null -w '%{http_code}' "$BASE/h2-console/")"
   if [ "$C" = "200" ] || [ "$C" = "302" ]; then LISTA=1; break; fi
+  if ! kill -0 "$PID" 2>/dev/null; then break; fi   # la app se cerro sola: no tiene sentido seguir esperando
   sleep 1
 done
-if [ $LISTA -ne 1 ]; then log "La aplicacion no arranco en 90 s (puerto 8080 ocupado?). Ultimas lineas:"; tail -15 "$TMP_APP" | tee -a "$SALIDA"; exit 1; fi
+if [ $LISTA -ne 1 ]; then log "La aplicacion no arranco (se cerro o tardo mas de 90 s). Ultimas lineas de su log:"; tail -15 "$TMP_APP" | tee -a "$SALIDA"; exit 1; fi
 log "Aplicacion arriba. Consola H2 responde en $BASE/h2-console"
 
 log ""
