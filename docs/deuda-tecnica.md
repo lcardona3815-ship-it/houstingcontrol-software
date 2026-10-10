@@ -7,6 +7,7 @@ Registro de las limitaciones conocidas de la implementación actual, con su impa
 - **Qué pasa:** el `docker-compose.yml` y el script `database/v1-initial-schema.sql` existen, pero el equipo de desarrollo no tiene virtualización habilitada, así que no se pudo levantar el contenedor de PostgreSQL.
 - **Impacto:** las pruebas corren contra H2, no contra PostgreSQL real.
 - **Plan:** ejecutar la demo en un equipo con virtualización, o con una instalación local de PostgreSQL, y guardar la evidencia (captura de `docker compose up` y de una consulta a la tabla `correspondencias`).
+- **Mitigación actual:** el perfil `h2` (`./mvnw spring-boot:run -Dspring-boot.run.profiles=h2`) permite ejecutar la API completa y consultar la tabla `CORRESPONDENCIAS` en `http://localhost:8080/h2-console` sin Docker. Sigue sin probarse contra PostgreSQL real.
 
 ## 2. El esquema de las pruebas no es el esquema SQL del proyecto
 
@@ -49,3 +50,9 @@ Registro de las limitaciones conocidas de la implementación actual, con su impa
 
 - Si el script SQL define una restricción `CHECK` o un tipo enumerado para `estado`.
 - Si los endpoints de cambio de estado deben restringirse al rol de portería. Esta revisión no incluyó seguridad.
+
+## 7. Un mismo tipo de excepción significa dos errores distintos
+
+- **Qué pasa:** el servicio lanza `IllegalArgumentException` tanto para datos inválidos (`registrar`, que el controlador traduce a 400) como para «el paquete no existe» (`notificar` y `entregar`, que traduce a 404). El significado depende de qué método se llamó, no del tipo de error.
+- **Impacto:** una prueba que solo comprueba el tipo de la excepción puede pasar por la razón equivocada. Ya ocurrió: `rechazaSiFaltaLaDescripcion` seguía en verde aunque se borrara la validación de la descripción, porque el repositorio falso devolvía "usuario vacío" y se lanzaba otra `IllegalArgumentException`. Se corrigió comprobando el mensaje y que no se consulte al usuario.
+- **Plan:** excepciones propias (`PaqueteNoEncontradoException`, `DatosInvalidosException`, `TransicionInvalidaException`) y un manejador de errores central en lugar de `try/catch` en cada ruta.

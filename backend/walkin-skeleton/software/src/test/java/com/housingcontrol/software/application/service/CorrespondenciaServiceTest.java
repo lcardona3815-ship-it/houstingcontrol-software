@@ -68,7 +68,25 @@ class CorrespondenciaServiceTest {
     void rechazaSiFaltaLaDescripcion() {
         RegistrarCorrespondenciaDTO dto = new RegistrarCorrespondenciaDTO("", "123");
 
-        assertThrows(IllegalArgumentException.class, () -> correspondenciaService.registrar(dto));
+        IllegalArgumentException error = assertThrows(IllegalArgumentException.class,
+                () -> correspondenciaService.registrar(dto));
+
+        // Se comprueba el motivo del rechazo: sin esto la prueba pasaba tambien por
+        // "el destinatario no existe", que es otro error (el repositorio falso devuelve vacio).
+        assertEquals("Destinatario y descripción son obligatorios", error.getMessage());
+        verify(usuarioRepository, never()).findById(any());
+        verify(correspondenciaRepository, never()).save(any());
+    }
+
+    @Test
+    void rechazaSiFaltaElDestinatario() {
+        RegistrarCorrespondenciaDTO dto = new RegistrarCorrespondenciaDTO("Caja mediana", "");
+
+        IllegalArgumentException error = assertThrows(IllegalArgumentException.class,
+                () -> correspondenciaService.registrar(dto));
+
+        assertEquals("Destinatario y descripción son obligatorios", error.getMessage());
+        verify(usuarioRepository, never()).findById(any());
         verify(correspondenciaRepository, never()).save(any());
     }
 }

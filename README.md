@@ -5,7 +5,7 @@ Sistema de gestión residencial diseñado para administrar Peticiones, Quejas, R
 ## Stack Tecnológico
 
 *   **Lenguaje:** Java 21
-*   **Framework:** Spring Boot 3.x
+*   **Framework:** Spring Boot 4.1.x
 *   **Persistencia:** Spring Data JPA (Hibernate)
 *   **Base de Datos:** PostgreSQL
 *   **Infraestructura:** Docker & Docker Compose
@@ -14,7 +14,7 @@ Sistema de gestión residencial diseñado para administrar Peticiones, Quejas, R
 
 Para ejecutar este proyecto localmente, necesitas instalar:
 *   [Java Development Kit (JDK)](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html) Versión 21 configurado en tus variables de entorno.
-*   [Docker Desktop](https://www.docker.com/products/docker-desktop/) para levantar el contenedor de la base de datos automáticamente.
+*   [Docker Desktop](https://www.docker.com/products/docker-desktop/) para levantar el contenedor de la base de datos automáticamente (opcional: con el perfil `h2` no hace falta).
 
 ## Instalación y Ejecución
 
@@ -32,7 +32,7 @@ Para ejecutar este proyecto localmente, necesitas instalar:
 
 3. Inicia el servidor backend:
    ```bash
-   cd backend/walkin-skeleton
+   cd backend/walkin-skeleton/software
    ./mvnw spring-boot:run
    ```
    Desde PowerShell
@@ -41,12 +41,26 @@ Para ejecutar este proyecto localmente, necesitas instalar:
    ```
    El servidor iniciará localmente y estará disponible en http://localhost:8080
 
+### Ejecutar sin Docker (perfil `h2`)
+
+Si no puedes usar Docker, la aplicación arranca con una base H2 en memoria y tres usuarios de demostración:
+
+```bash
+cd backend/walkin-skeleton/software
+./mvnw spring-boot:run -Dspring-boot.run.profiles=h2
+```
+
+Consola de la base de datos: http://localhost:8080/h2-console  
+JDBC URL `jdbc:h2:mem:housing;MODE=PostgreSQL;DB_CLOSE_DELAY=-1` · usuario `sa` · contraseña vacía.  
+Todo se borra al apagar la aplicación.
+
 ## Documentación
 Toda la documentación técnica y de negocio se encuentra estructurada en las siguientes carpetas:
 - [`docs/vision-producto.md`](./docs/vision-producto.md) — Problema, usuarios, propuesta de valor y alcance del MVP.
 - [`docs/problema-duro.md`](./docs/problema-duro.md) — Reto técnico, invariante de negocio y evidencia exigida.
 - [`docs/historias-usuario.md`](./docs/historias-usuario.md) — Historias de usuario con criterios de aceptación.
 - [`docs/uso-ia.md`](./docs/uso-ia.md) — Política de uso de IA y bitácora del equipo.
+- [`docs/guia-tecnica-hu04.md`](./docs/guia-tecnica-hu04.md) — Guía técnica de HU-04: stack, estructura, cómo ejecutarla y cómo leer sus pruebas.
 
 ## Historias de usuario implementadas
 
@@ -67,7 +81,7 @@ Toda la documentación técnica y de negocio se encuentra estructurada en las si
 **Cómo ejecutar las pruebas:**
 ```bash
 cd backend/walkin-skeleton/software
-mvn test
+./mvnw test
 ```
 
 **Commit de la implementación:** [`108c6f7`](https://github.com/lcardona3815-ship-it/houstingcontrol-software/commit/108c6f7096dd7d52105caa624d6c8f736b72eb49)
@@ -78,16 +92,19 @@ mvn test
 |---|---|
 | Se registra destinatario | `registraPaqueteConEstadoRecibidoYFechaDeRecepcion` |
 | Se rechaza si el destinatario no existe | `rechazaSiElDestinatarioNoExiste` |
+| Se exige el destinatario | `rechazaSiFaltaElDestinatario` |
 | Se exige la descripción | `rechazaSiFaltaLaDescripcion` |
 | Se registra fecha de recepción | `registraPaqueteConEstadoRecibidoYFechaDeRecepcion` |
 | Estado `RECIBIDO → NOTIFICADO` | `notificaPaqueteRecibidoYPasaANotificado` |
 | Estado `NOTIFICADO → ENTREGADO` | `entregaPaqueteNotificadoYPasaAEntregado` |
 | No se salta de estado | `rechazaEntregarSiElPaqueteNoFueNotificado` |
 
-**Resultado de la ejecución** (`./mvnw test`): 35 pruebas del proyecto, 0 fallos, `BUILD SUCCESS`.
-De ellas, 23 son de la HU-04: `CorrespondenciaServiceTest` (3), `CorrespondenciaEstadoServiceTest` (5), `CorrespondenciaControllerTest` (2), `CorrespondenciaEstadoControllerTest` (6), `CorrespondenciaIntegrationTest` (3) y `CorrespondenciaEstadoIntegrationTest` (4).
+**Resultado de la ejecución** (`./mvnw test`): 36 pruebas del proyecto, 0 fallos, `BUILD SUCCESS`.
+De ellas, 24 son de la HU-04: `CorrespondenciaServiceTest` (4), `CorrespondenciaEstadoServiceTest` (5), `CorrespondenciaControllerTest` (2), `CorrespondenciaEstadoControllerTest` (6), `CorrespondenciaIntegrationTest` (3) y `CorrespondenciaEstadoIntegrationTest` (4).
 
 Evidencia completa: [`docs/evidencia-hu04.txt`](docs/evidencia-hu04.txt)
+
+Guía técnica de HU-04: [`docs/guia-tecnica-hu04.md`](docs/guia-tecnica-hu04.md) · Demostración reproducible (pruebas + API + base de datos): `bash scripts/evidencia-hu04.sh` → `docs/evidencia-hu04-demo.txt`
 
 **Endpoints de cambio de estado**
 
