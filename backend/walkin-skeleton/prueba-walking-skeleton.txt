@@ -1,3 +1,7 @@
 ./mvnw spring-boot:run
 
+Para PQRS
 Invoke-RestMethod -Uri http://localhost:8080/api/pqrs -Method POST -Headers @{"Content-Type"="application/json"} -Body '{"asunto": "Filtracion de agua", "descripcion": "Humedad en la pared que da hacia el estacionamiento", "cedula_usuarios": "1010000005"}'
+
+Para reservas de zonas comunes
+Invoke-RestMethod -Uri http://localhost:8080/api/reservas -Method POST -Headers @{"Content-Type"="application/json; charset=utf-8"} -Body '{"zonas_comunes_id": "7bf2a00e-c9cc-4780-bfe7-416fdbd8a5e4", "fecha_reserva": "2026-10-31T18:00:00", "cedula_usuarios": "1010000005"}'
