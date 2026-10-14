@@ -5,7 +5,7 @@ Sistema de gestión residencial diseñado para administrar Peticiones, Quejas, R
 ## Stack Tecnológico
 
 *   **Lenguaje:** Java 21
-*   **Framework:** Spring Boot 3.x
+*   **Framework:** Spring Boot 4.x
 *   **Persistencia:** Spring Data JPA (Hibernate)
 *   **Base de Datos:** PostgreSQL
 *   **Infraestructura:** Docker & Docker Compose
