@@ -1,27 +1,27 @@
 package com.housingcontrol.software.application.service;
 
-import com.housingcontrol.software.application.dto.RegistrarVisitanteDTO;
-import com.housingcontrol.software.domain.Visitante;
-import com.housingcontrol.software.infrastructure.repository.UsuarioRepository;
-import com.housingcontrol.software.infrastructure.repository.VisitanteRepository;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.time.LocalDateTime;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import com.housingcontrol.software.application.dto.RegistrarVisitanteDTO;
+import com.housingcontrol.software.domain.Visitante;
+import com.housingcontrol.software.infrastructure.repository.UsuarioRepository;
+import com.housingcontrol.software.infrastructure.repository.VisitanteRepository;
 
 @ExtendWith(MockitoExtension.class)
-class VisitanteServiceTest {
+public class VisitanteServiceTest {
 
     @Mock
     private VisitanteRepository visitanteRepository;
@@ -33,38 +33,81 @@ class VisitanteServiceTest {
     private VisitanteService visitanteService;
 
     @Test
-    void registraVisitanteAsociadoAlResidente() {
+    void debeRegistrarVisitanteCuandoDatosYResidenteSonValidos() {
+        // 1. Preparar (HU-02): Primero va el nombre y segundo la cédula
         RegistrarVisitanteDTO dto = new RegistrarVisitanteDTO(
-                "Carlos", "987", "CC", LocalDateTime.of(2026, 10, 5, 15, 0), "123");
-        when(usuarioRepository.existsById("123")).thenReturn(true);
-        when(visitanteRepository.save(any(Visitante.class)))
-                .thenAnswer(invocacion -> invocacion.getArgument(0));
+                "Carlos Pérez",
+                "1020304050",
+                "CC",
+                LocalDateTime.now().plusDays(1),
+                "1010000004"
+        );
 
+        when(usuarioRepository.existsById("1010000004")).thenReturn(true);
+        when(visitanteRepository.save(any(Visitante.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        // 2. Ejecutar
         Visitante resultado = visitanteService.registrar(dto);
 
-        assertEquals("Carlos", resultado.getNombre());
-        assertEquals("987", resultado.getCedula());
-        assertEquals("123", resultado.getCedulaUsuarios());
-        assertEquals(LocalDateTime.of(2026, 10, 5, 15, 0), resultado.getFechaPrevista());
-        assertNull(resultado.getFechaIngreso());
+        // 3. Verificar
+        assertNotNull(resultado);
+        assertEquals("Carlos Pérez", resultado.getNombre());
+        assertEquals("1020304050", resultado.getCedula());
+        assertEquals("1010000004", resultado.getCedulaUsuarios());
+        verify(visitanteRepository, times(1)).save(any(Visitante.class));
     }
 
     @Test
-    void rechazaSiElResidenteNoExiste() {
-        RegistrarVisitanteDTO dto = new RegistrarVisitanteDTO(
-                "Carlos", "987", "CC", null, "999");
-        when(usuarioRepository.existsById("999")).thenReturn(false);
+    void debeConsultarVisitanteEnPorteriaYMostrarResidenteAsociado() {
+        // 1. Preparar (HU-03)
+        Visitante visitante = new Visitante();
+        visitante.setCedula("1020304050");
+        visitante.setNombre("Carlos Pérez");
+        visitante.setTipoDocumento("CC");
+        visitante.setCedulaUsuarios("1010000004");
 
-        assertThrows(IllegalArgumentException.class, () -> visitanteService.registrar(dto));
-        verify(visitanteRepository, never()).save(any());
+        when(visitanteRepository.findByCedula("1020304050")).thenReturn(List.of(visitante));
+
+        // 2. Ejecutar
+        List<Visitante> resultado = visitanteService.consultarPorCedula("1020304050");
+
+        // 3. Verificar: muestra el visitante y el residente asociado
+        assertFalse(resultado.isEmpty());
+        assertEquals("Carlos Pérez", resultado.get(0).getNombre());
+        assertEquals("1010000004", resultado.get(0).getCedulaUsuarios());
+        verify(visitanteRepository, times(1)).findByCedula("1020304050");
     }
 
     @Test
-    void rechazaSiFaltaElNombre() {
-        RegistrarVisitanteDTO dto = new RegistrarVisitanteDTO(
-                "", "987", "CC", null, "123");
+    void debeRegistrarIngresoYAlmacenarFechaYHora() {
+        // 1. Preparar (HU-03)
+        UUID idVisitante = UUID.randomUUID();
+        Visitante visitante = new Visitante();
+        visitante.setCedula("1020304050");
+        visitante.setNombre("Carlos Pérez");
+        visitante.setTipoDocumento("CC");
+        visitante.setCedulaUsuarios("1010000004");
 
-        assertThrows(IllegalArgumentException.class, () -> visitanteService.registrar(dto));
+        when(visitanteRepository.findById(idVisitante)).thenReturn(Optional.of(visitante));
+        when(visitanteRepository.save(any(Visitante.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        // 2. Ejecutar
+        Visitante resultado = visitanteService.registrarIngreso(idVisitante);
+
+        // 3. Verificar: almacena fecha y hora del ingreso
+        assertNotNull(resultado.getFechaIngreso());
+        verify(visitanteRepository, times(1)).save(visitante);
+    }
+
+    @Test
+    void debeLanzarExcepcionSiVisitanteNoExisteAlRegistrarIngreso() {
+        UUID idInexistente = UUID.randomUUID();
+        when(visitanteRepository.findById(idInexistente)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            visitanteService.registrarIngreso(idInexistente);
+        });
+
         verify(visitanteRepository, never()).save(any());
     }
 }

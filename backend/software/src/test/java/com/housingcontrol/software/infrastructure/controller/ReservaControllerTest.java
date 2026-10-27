@@ -1,52 +1,105 @@
 package com.housingcontrol.software.infrastructure.controller;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.housingcontrol.software.application.dto.CrearReservaDTO;
-
-import tools.jackson.databind.ObjectMapper;
+import com.housingcontrol.software.infrastructure.repository.ReservaRepository;
 
 @SpringBootTest
-@AutoConfigureMockMvc
-@Transactional
 public class ReservaControllerTest {
 
-    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private ReservaController reservaController;
+
+    @Autowired
+    private ReservaRepository reservaRepository;
+
+    @BeforeEach
+    void configurarEntorno() {
+        reservaRepository.deleteAll();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(reservaController).build();
+    }
 
     @Test
-    void debeEvitarReservasDuplicadasParaLaMismaZonaYFecha() throws Exception {
-        UUID zonaId = UUID.fromString("7bf2a00e-c9cc-4780-bfe7-416fdbd8a5e4"); // Reemplaza por uno válido
-        LocalDateTime fecha = LocalDateTime.of(2026, 12, 31, 18, 0);
-        
-        CrearReservaDTO reserva1 = new CrearReservaDTO(zonaId, fecha, "1010000004");
-        CrearReservaDTO reserva2 = new CrearReservaDTO(zonaId, fecha, "1010000005");
+    void debeConsultarDisponibilidadDeZonaComunYRetornarDisponibleTrue() throws Exception {
+        // HU-05: Consultar disponibilidad antes de reservar
+        UUID zonaId = UUID.randomUUID();
+        String fecha = "2026-11-20T15:00:00";
 
-        // 1. La primera petición debe ser exitosa (201 Created)
+        mockMvc.perform(get("/api/reservas/disponibilidad")
+                .param("zonasComunesId", zonaId.toString())
+                .param("fechaReserva", fecha)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.disponible").value(true));
+    }
+
+    @Test
+    void debeCrearReservaCuandoZonaEstaDisponibleYRetornar201() throws Exception {
+        // HU-05: Crear reserva en fecha y horario disponible -> HTTP 201 Created
+        UUID zonaId = UUID.randomUUID();
+        String jsonReserva = String.format("""
+            {
+                "zonasComunesId": "%s",
+                "fechaReserva": "2026-11-20T15:00:00",
+                "cedulaUsuarios": "1010000004"
+            }
+            """, zonaId);
+
         mockMvc.perform(post("/api/reservas")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(reserva1)))
-                .andExpect(status().isCreated());
+                .content(jsonReserva))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").isNotEmpty())
+                .andExpect(jsonPath("$.estado").value("CONFIRMADA"))
+                .andExpect(jsonPath("$.cedulaUsuarios").value("1010000004"));
+    }
 
-        // 2. La segunda petición simultánea debe ser rechazada (409 Conflict)
+    @Test
+    void debeRechazarReservaDuplicadaMismoHorarioYRetornar409Conflict() throws Exception {
+        // HU-05 y HU-06: Dos solicitudes para la misma zona y mismo horario
+        UUID zonaId = UUID.randomUUID();
+
+        String primeraSolicitud = String.format("""
+            {
+                "zonasComunesId": "%s",
+                "fechaReserva": "2026-11-20T18:00:00",
+                "cedulaUsuarios": "1010000004"
+            }
+            """, zonaId);
+
+        String segundaSolicitudDuplicada = String.format("""
+            {
+                "zonasComunesId": "%s",
+                "fechaReserva": "2026-11-20T18:00:00",
+                "cedulaUsuarios": "1010000005"
+            }
+            """, zonaId);
+
+        // 1. La primera solicitud se confirma con HTTP 201 Created
         mockMvc.perform(post("/api/reservas")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(reserva2)))
+                .content(primeraSolicitud))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.estado").value("CONFIRMADA"));
+
+        // 2. La segunda solicitud para el mismo horario es rechazada con HTTP 409 Conflict
+        mockMvc.perform(post("/api/reservas")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(segundaSolicitudDuplicada))
                 .andExpect(status().isConflict());
     }
 }

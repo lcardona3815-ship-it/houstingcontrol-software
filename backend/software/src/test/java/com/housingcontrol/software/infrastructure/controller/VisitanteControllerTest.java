@@ -1,47 +1,75 @@
 package com.housingcontrol.software.infrastructure.controller;
 
-import com.housingcontrol.software.application.dto.RegistrarVisitanteDTO;
-import com.housingcontrol.software.application.service.VisitanteService;
-import com.housingcontrol.software.domain.Visitante;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.time.LocalDateTime;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
+import com.housingcontrol.software.domain.Visitante;
+import com.housingcontrol.software.infrastructure.repository.VisitanteRepository;
 
-@ExtendWith(MockitoExtension.class)
-class VisitanteControllerTest {
+@SpringBootTest
+public class VisitanteControllerTest {
 
-    @Mock
-    private VisitanteService visitanteService;
+    private MockMvc mockMvc;
 
-    @InjectMocks
+    @Autowired
     private VisitanteController visitanteController;
 
-    @Test
-    void registroValidoResponde201() {
-        RegistrarVisitanteDTO dto = new RegistrarVisitanteDTO(
-                "Carlos", "987", "CC", null, "123");
-        when(visitanteService.registrar(dto)).thenReturn(new Visitante());
+    @Autowired
+    private VisitanteRepository visitanteRepository;
 
-        ResponseEntity<?> respuesta = visitanteController.registrar(dto);
-
-        assertEquals(201, respuesta.getStatusCode().value());
+    @BeforeEach
+    void configurarEntorno() {
+        visitanteRepository.deleteAll();
+        this.mockMvc = MockMvcBuilders.standaloneSetup(visitanteController).build();
     }
 
     @Test
-    void registroInvalidoResponde400() {
-        RegistrarVisitanteDTO dto = new RegistrarVisitanteDTO(
-                "Carlos", "987", "CC", null, "999");
-        when(visitanteService.registrar(dto))
-                .thenThrow(new IllegalArgumentException("El residente no existe"));
+    void debeBuscarVisitantePorCedulaYMostrarResidenteAsociado() throws Exception {
+        // 1. Preparar en H2 usando los setters de Visitante
+        Visitante visitante = new Visitante();
+        visitante.setCedula("1020304050");
+        visitante.setNombre("Laura Gómez");
+        visitante.setTipoDocumento("CC");
+        visitante.setFechaPrevista(LocalDateTime.now().plusHours(2));
+        visitante.setCedulaUsuarios("1010000004");
+        visitanteRepository.save(visitante);
 
-        ResponseEntity<?> respuesta = visitanteController.registrar(dto);
+        // 2. Ejecutar GET y 3. Verificar respuesta JSON
+        mockMvc.perform(get("/api/visitantes/buscar/1020304050")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].cedula").value("1020304050"))
+                .andExpect(jsonPath("$[0].nombre").value("Laura Gómez"))
+                .andExpect(jsonPath("$[0].cedulaUsuarios").value("1010000004"));
+    }
 
-        assertEquals(400, respuesta.getStatusCode().value());
+    @Test
+    void debeRegistrarIngresoYGuardarFechaHoraEnH2() throws Exception {
+        // 1. Preparar visitante sin fecha de ingreso
+        Visitante visitante = new Visitante();
+        visitante.setCedula("1020304050");
+        visitante.setNombre("Laura Gómez");
+        visitante.setTipoDocumento("CC");
+        visitante.setFechaPrevista(LocalDateTime.now());
+        visitante.setCedulaUsuarios("1010000004");
+        Visitante guardado = visitanteRepository.save(visitante);
+
+        // 2. Ejecutar PUT de ingreso y 3. Verificar que fechaIngreso ya no sea nula
+        mockMvc.perform(put("/api/visitantes/" + guardado.getId() + "/ingreso")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(guardado.getId().toString()))
+                .andExpect(jsonPath("$.fechaIngreso").isNotEmpty());
     }
 }

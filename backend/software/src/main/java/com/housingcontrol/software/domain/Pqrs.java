@@ -2,7 +2,6 @@ package com.housingcontrol.software.domain;
 
 import jakarta.persistence.*;
 import java.util.UUID;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "pqrs")
@@ -12,7 +11,7 @@ public class Pqrs {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String asunto;
 
     @Column(nullable = false, columnDefinition = "TEXT")
@@ -21,29 +20,31 @@ public class Pqrs {
     @Column(nullable = false)
     private String estado;
 
-    @Column(name = "cedula_usuarios", nullable = false)
+    @Column(columnDefinition = "TEXT")
+    private String respuesta;
+
+    @Column(name = "cedula_usuarios", length = 50)
     private String cedulaUsuarios;
 
-    @Column(name = "fecha_hora")
-    private LocalDateTime fechaHora;
-
-    // Constructores, Getters y Setters
     public Pqrs() {}
 
+    public Pqrs(String asunto, String descripcion, String cedulaUsuarios) {
+        this.asunto = asunto;
+        this.descripcion = descripcion;
+        this.cedulaUsuarios = cedulaUsuarios;
+        this.estado = "PENDIENTE";
+    }
+
     public UUID getId() { return id; }
-    
+    public void setId(UUID id) { this.id = id; }
     public String getAsunto() { return asunto; }
     public void setAsunto(String asunto) { this.asunto = asunto; }
-    
     public String getDescripcion() { return descripcion; }
     public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
-    
     public String getEstado() { return estado; }
     public void setEstado(String estado) { this.estado = estado; }
-    
+    public String getRespuesta() { return respuesta; }
+    public void setRespuesta(String respuesta) { this.respuesta = respuesta; }
     public String getCedulaUsuarios() { return cedulaUsuarios; }
     public void setCedulaUsuarios(String cedulaUsuarios) { this.cedulaUsuarios = cedulaUsuarios; }
-
-    public LocalDateTime getFechaHora() { return fechaHora; }
-    public void setFechaHora(LocalDateTime fechaHora) { this.fechaHora = fechaHora; }
 }

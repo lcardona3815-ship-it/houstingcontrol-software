@@ -6,6 +6,10 @@ import com.housingcontrol.software.infrastructure.repository.UsuarioRepository;
 import com.housingcontrol.software.infrastructure.repository.VisitanteRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
 @Service
 public class VisitanteService {
 
@@ -18,6 +22,7 @@ public class VisitanteService {
         this.usuarioRepository = usuarioRepository;
     }
 
+    // HU-02: Registro previo de visitante por el residente
     public Visitante registrar(RegistrarVisitanteDTO dto) {
         if (esVacio(dto.nombre()) || esVacio(dto.cedula())
                 || esVacio(dto.tipoDocumento()) || esVacio(dto.cedulaUsuarios())) {
@@ -35,6 +40,23 @@ public class VisitanteService {
         visitante.setFechaPrevista(dto.fechaPrevista());
         visitante.setCedulaUsuarios(dto.cedulaUsuarios());
 
+        return visitanteRepository.save(visitante);
+    }
+
+    // HU-03: Consultar visitantes registrados en portería
+    public List<Visitante> consultarPorCedula(String cedula) {
+        if (esVacio(cedula)) {
+            throw new IllegalArgumentException("El documento del visitante es obligatorio para la consulta");
+        }
+        return visitanteRepository.findByCedula(cedula);
+    }
+
+    // HU-03: Registrar el ingreso almacenando fecha y hora
+    public Visitante registrarIngreso(UUID id) {
+        Visitante visitante = visitanteRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("El visitante no se encuentra registrado"));
+
+        visitante.setFechaIngreso(LocalDateTime.now());
         return visitanteRepository.save(visitante);
     }
 
