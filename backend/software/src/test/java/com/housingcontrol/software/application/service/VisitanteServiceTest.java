@@ -34,20 +34,19 @@ public class VisitanteServiceTest {
 
     @Test
     void debeRegistrarVisitanteCuandoDatosYResidenteSonValidos() {
-        // 1. Preparar (HU-02): Primero va el nombre y segundo la cédula
+        // 1. Preparar (HU-02): El DTO ya no recibe la cédula del usuario (Mitigación BOLA)
         RegistrarVisitanteDTO dto = new RegistrarVisitanteDTO(
                 "Carlos Pérez",
                 "1020304050",
-                "CC",
-                LocalDateTime.now().plusDays(1),
-                "1010000004"
+                "CC", // Debe ser un tipo válido (CC, CE, NIT, PASAPORTE)
+                LocalDateTime.now().plusDays(1)
         );
 
         when(usuarioRepository.existsById("1010000004")).thenReturn(true);
         when(visitanteRepository.save(any(Visitante.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        // 2. Ejecutar
-        Visitante resultado = visitanteService.registrar(dto);
+        // 2. Ejecutar: Pasamos la cédula del residente como segundo parámetro (simulando SecurityContext)
+        Visitante resultado = visitanteService.registrar(dto, "1010000004");
 
         // 3. Verificar
         assertNotNull(resultado);
@@ -55,6 +54,25 @@ public class VisitanteServiceTest {
         assertEquals("1020304050", resultado.getCedula());
         assertEquals("1010000004", resultado.getCedulaUsuarios());
         verify(visitanteRepository, times(1)).save(any(Visitante.class));
+    }
+    
+    @Test
+    void debeLanzarExcepcionAlRegistrarVisitanteConTipoDocumentoInvalido() {
+        // 1. Preparar: Tipo de documento fuera del ENUM (Mitigación Evasión Constraints)
+        RegistrarVisitanteDTO dto = new RegistrarVisitanteDTO(
+                "Carlos Pérez",
+                "1020304050",
+                "INVALIDO", // Falla provocada
+                LocalDateTime.now().plusDays(1)
+        );
+
+        // 2. Ejecutar y 3. Verificar
+        assertThrows(IllegalArgumentException.class, () -> {
+            visitanteService.registrar(dto, "1010000004");
+        });
+
+        verify(usuarioRepository, never()).existsById(any());
+        verify(visitanteRepository, never()).save(any());
     }
 
     @Test

@@ -26,21 +26,28 @@ public class ReservaService {
     }
 
     // HU-05 y HU-06: Crear reserva verificando disponibilidad y evitando duplicados
-    public Reserva crearReserva(CrearReservaDTO dto) {
-        if (dto.zonasComunesId() == null || dto.fechaReserva() == null
-                || dto.cedulaUsuarios() == null || dto.cedulaUsuarios().isBlank()) {
-            throw new IllegalArgumentException("La zona común, la fecha y el documento del residente son obligatorios");
+    public Reserva crearReserva(CrearReservaDTO dto, String cedulaAutenticada) {
+        
+        // 1. Validación de nulidad
+        if (dto.zonasComunesId() == null || dto.fechaReserva() == null) {
+            throw new IllegalArgumentException("La zona común y la fecha son obligatorias");
         }
 
-        // Barrera lógica: verifica disponibilidad antes de insertar
+        // 2. Validación de tiempo (Mitigación Caso 2 - Auditoría)
+        if (dto.fechaReserva().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("No se pueden crear reservas en el pasado");
+        }
+
+        // 3. Barrera lógica (Mitigación colisiones HU-06)
         if (reservaRepository.existsByZonasComunesIdAndFechaReserva(dto.zonasComunesId(), dto.fechaReserva())) {
             throw new IllegalStateException("La zona común ya se encuentra reservada para esa fecha y horario");
         }
 
+        // 4. Persistencia de la reserva segura
         Reserva nuevaReserva = new Reserva();
         nuevaReserva.setZonasComunesId(dto.zonasComunesId());
         nuevaReserva.setFechaReserva(dto.fechaReserva());
-        nuevaReserva.setCedulaUsuarios(dto.cedulaUsuarios());
+        nuevaReserva.setCedulaUsuarios(cedulaAutenticada); // Asignación segura desde el token
         nuevaReserva.setEstado("CONFIRMADA");
 
         return reservaRepository.save(nuevaReserva);

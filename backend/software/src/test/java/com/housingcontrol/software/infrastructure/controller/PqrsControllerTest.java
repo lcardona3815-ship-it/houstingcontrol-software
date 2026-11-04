@@ -10,8 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.util.HtmlUtils;
 
 import com.housingcontrol.software.domain.Pqrs;
 import com.housingcontrol.software.infrastructure.repository.PqrsRepository;
@@ -31,11 +34,17 @@ public class PqrsControllerTest {
     void configurarEntorno() {
         pqrsRepository.deleteAll();
         this.mockMvc = MockMvcBuilders.standaloneSetup(pqrsController).build();
+        
+        // Simulamos que Spring Security interceptó un token JWT válido para el residente "1010000004"
+        SecurityContextHolder.getContext().setAuthentication(
+            new UsernamePasswordAuthenticationToken("1010000004", null, java.util.List.of())
+        );
     }
 
     @Test
     void debeRegistrarPqrsEnBaseDeDatosYRetornar201() throws Exception {
-        // HU-07: Registro inicial en estado PENDIENTE
+        // HU-07: Registro inicial en estado PENDIENTE.
+        String asuntoOriginal = "Falla en citófono";
         String jsonValido = """
             {
                 "asunto": "Falla en citófono",
@@ -49,14 +58,13 @@ public class PqrsControllerTest {
                 .content(jsonValido))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNotEmpty())
-                .andExpect(jsonPath("$.asunto").value("Falla en citófono"))
+                .andExpect(jsonPath("$.asunto").value(HtmlUtils.htmlEscape(asuntoOriginal)))
                 .andExpect(jsonPath("$.cedulaUsuarios").value("1010000004"))
                 .andExpect(jsonPath("$.estado").value("PENDIENTE"));
     }
 
     @Test
     void debeFiltrarPqrsPorEstadoEnH2() throws Exception {
-        // HU-08: Administrador filtra PQRS por estado
         Pqrs pendiente = new Pqrs("Bombillo fundido", "Pasillo torre 1 sin luz", "1010000004");
         pendiente.setEstado("PENDIENTE");
         pqrsRepository.save(pendiente);
@@ -76,39 +84,43 @@ public class PqrsControllerTest {
 
     @Test
     void debeActualizarEstadoYRegistrarRespuestaEnH2() throws Exception {
-        // HU-08: Administrador actualiza estado y registra respuesta
         Pqrs inicial = new Pqrs("Humedad en techo", "Filtración en último piso", "1010000004");
         inicial.setEstado("PENDIENTE");
         Pqrs guardada = pqrsRepository.save(inicial);
 
-        String jsonActualizacion = """
+        String respuestaOriginal = "Se programó impermeabilización para el jueves a las 9:00 AM";
+        
+        String jsonActualizacion = String.format("""
             {
                 "estado": "EN_PROCESO",
-                "respuesta": "Se programó impermeabilización para el jueves a las 9:00 AM"
+                "respuesta": "%s"
             }
-            """;
+            """, respuestaOriginal);
 
         mockMvc.perform(put("/api/pqrs/" + guardada.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonActualizacion))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.estado").value("EN_PROCESO"))
-                .andExpect(jsonPath("$.respuesta").value("Se programó impermeabilización para el jueves a las 9:00 AM"));
+                // Validación de seguridad XSS en la respuesta JSON
+                .andExpect(jsonPath("$.respuesta").value(HtmlUtils.htmlEscape(respuestaOriginal)));
     }
 
     @Test
     void debePermitirAlResidenteConsultarElEstadoDeSuSolicitud() throws Exception {
-        // HU-08: Residente consulta sus PQRS y ve el estado actualizado
         Pqrs pqrs = new Pqrs("Revisión de cámara", "Cámara del lobby desenfocada", "1010000004");
         pqrs.setEstado("RESUELTA");
-        pqrs.setRespuesta("Lente calibrado por soporte técnico");
+        
+        String respuestaOriginal = "Lente calibrado por soporte técnico";
+        pqrs.setRespuesta(HtmlUtils.htmlEscape(respuestaOriginal));
         pqrsRepository.save(pqrs);
 
-        mockMvc.perform(get("/api/pqrs/residente/1010000004")
+        // Cambiamos a la URL segura que no recibe cédula por parámetro
+        mockMvc.perform(get("/api/pqrs/mis-solicitudes")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].cedulaUsuarios").value("1010000004"))
                 .andExpect(jsonPath("$[0].estado").value("RESUELTA"))
-                .andExpect(jsonPath("$[0].respuesta").value("Lente calibrado por soporte técnico"));
+                .andExpect(jsonPath("$[0].respuesta").value(HtmlUtils.htmlEscape(respuestaOriginal)));
     }
 }

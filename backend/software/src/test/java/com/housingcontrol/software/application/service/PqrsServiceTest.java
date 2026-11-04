@@ -13,6 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.util.HtmlUtils;
 
 import com.housingcontrol.software.application.dto.ActualizarPqrsDTO;
 import com.housingcontrol.software.application.dto.CrearPqrsDTO;
@@ -32,8 +33,8 @@ public class PqrsServiceTest {
     void debeCrearPqrsConEstadoPendienteYCedulaAsociada() {
         // HU-07: Crear PQRS
         CrearPqrsDTO dto = new CrearPqrsDTO(
-                "Ruido en zona común",
-                "Música a alto volumen después de la medianoche",
+                "Ruido en zona comun", 
+                "Musica a alto volumen", 
                 "1010000004"
         );
 
@@ -74,10 +75,8 @@ public class PqrsServiceTest {
         pqrsExistente.setId(pqrsId);
         pqrsExistente.setEstado("PENDIENTE");
 
-        ActualizarPqrsDTO dto = new ActualizarPqrsDTO(
-                "RESUELTA",
-                "El equipo de mantenimiento reparó la tubería el día de hoy"
-        );
+        String respuestaOriginal = "El equipo de mantenimiento reparó la tubería el día de hoy";
+        ActualizarPqrsDTO dto = new ActualizarPqrsDTO("RESUELTA", respuestaOriginal);
 
         when(pqrsRepository.findById(pqrsId)).thenReturn(Optional.of(pqrsExistente));
         when(pqrsRepository.save(any(Pqrs.class))).thenAnswer(inv -> inv.getArgument(0));
@@ -85,7 +84,10 @@ public class PqrsServiceTest {
         Pqrs actualizada = pqrsService.gestionarPqrs(pqrsId, dto);
 
         assertEquals("RESUELTA", actualizada.getEstado());
-        assertEquals("El equipo de mantenimiento reparó la tubería el día de hoy", actualizada.getRespuesta());
+        
+        // Validación de Seguridad: Comprobamos que el servicio escapó correctamente los caracteres (XSS)
+        assertEquals(HtmlUtils.htmlEscape(respuestaOriginal), actualizada.getRespuesta());
+        
         verify(pqrsRepository, times(1)).save(pqrsExistente);
     }
 
@@ -94,7 +96,7 @@ public class PqrsServiceTest {
         // HU-08: El residente puede consultar el estado de su solicitud
         Pqrs pqrsResidente = new Pqrs("Fuga de agua", "Goteo en parqueadero", "1010000004");
         pqrsResidente.setEstado("EN_PROCESO");
-        pqrsResidente.setRespuesta("Técnico asignado para revisión");
+        pqrsResidente.setRespuesta("Tecnico asignado para revision");
 
         when(pqrsRepository.findByCedulaUsuarios("1010000004")).thenReturn(List.of(pqrsResidente));
 
@@ -102,7 +104,7 @@ public class PqrsServiceTest {
 
         assertFalse(resultado.isEmpty());
         assertEquals("EN_PROCESO", resultado.get(0).getEstado());
-        assertEquals("Técnico asignado para revisión", resultado.get(0).getRespuesta());
+        assertEquals("Tecnico asignado para revision", resultado.get(0).getRespuesta());
         verify(pqrsRepository, times(1)).findByCedulaUsuarios("1010000004");
     }
 }

@@ -5,6 +5,5 @@ import java.util.UUID;
 
 public record CrearReservaDTO(
     UUID zonasComunesId,
-    LocalDateTime fechaReserva,
-    String cedulaUsuarios
+    LocalDateTime fechaReserva
 ) {}

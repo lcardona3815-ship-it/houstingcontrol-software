@@ -8,6 +8,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -44,17 +46,17 @@ public class ReservaController {
     @PostMapping
     public ResponseEntity<?> crearReserva(@RequestBody CrearReservaDTO dto) {
         try {
-            Reserva creada = reservaService.crearReserva(dto);
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String cedulaAutenticada = auth.getName(); 
+            Reserva creada = reservaService.crearReserva(dto, cedulaAutenticada);
             return ResponseEntity.status(HttpStatus.CREATED).body(creada);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("mensaje", e.getMessage()));
         } catch (IllegalStateException e) {
-            // HTTP 409 Conflict (Barrera Lógica en Servicio)
             return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("mensaje", e.getMessage()));
-        } catch (DataIntegrityViolationException e) {
-            // HTTP 409 Conflict (Barrera Física UNIQUE en Base de Datos)
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(Map.of("mensaje", "Colisión detectada en BD: la zona ya fue reservada en este horario"));
+                    .body(Map.of("mensaje", "Colisión detectada en BD"));
         }
     }
 }

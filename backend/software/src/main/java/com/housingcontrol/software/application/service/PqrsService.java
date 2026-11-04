@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.HtmlUtils;
 
 import com.housingcontrol.software.application.dto.ActualizarPqrsDTO;
 import com.housingcontrol.software.application.dto.CrearPqrsDTO;
@@ -22,14 +23,20 @@ public class PqrsService {
         this.pqrsRepository = pqrsRepository;
     }
 
-    // HU-07: Registrar PQRS con estado inicial PENDIENTE
+    // HU-07: Registrar PQRS con estado inicial PENDIENTE y Sanitización XSS
     public Pqrs crearPqrs(CrearPqrsDTO dto) {
         if (esVacio(dto.asunto()) || esVacio(dto.descripcion()) || esVacio(dto.cedulaUsuarios())) {
             throw new IllegalArgumentException("El asunto, la descripción y la cédula del residente son obligatorios");
         }
 
-        Pqrs nuevaPqrs = new Pqrs(dto.asunto(), dto.descripcion(), dto.cedulaUsuarios());
+        // Sanitización de entradas para mitigar XSS Almacenado
+        String asuntoSanitizado = HtmlUtils.htmlEscape(dto.asunto());
+        String descripcionSanitizada = HtmlUtils.htmlEscape(dto.descripcion());
+
+        // Creación usando los textos seguros en lugar de los crudos
+        Pqrs nuevaPqrs = new Pqrs(asuntoSanitizado, descripcionSanitizada, dto.cedulaUsuarios());
         nuevaPqrs.setEstado("PENDIENTE");
+        
         return pqrsRepository.save(nuevaPqrs);
     }
 
@@ -52,7 +59,7 @@ public class PqrsService {
         return pqrsRepository.findByCedulaUsuarios(cedulaUsuarios);
     }
 
-    // HU-08: Cambiar el estado y registrar una respuesta (Administrador)
+    // HU-08: Cambiar el estado y registrar una respuesta sanitizada (Administrador)
     public Pqrs gestionarPqrs(UUID id, ActualizarPqrsDTO dto) {
         if (esVacio(dto.estado()) || !ESTADOS_VALIDOS.contains(dto.estado())) {
             throw new IllegalArgumentException("El estado debe ser PENDIENTE, EN_PROCESO o RESUELTA");
@@ -62,8 +69,10 @@ public class PqrsService {
                 .orElseThrow(() -> new IllegalStateException("La PQRS solicitada no existe"));
 
         pqrs.setEstado(dto.estado());
+        
         if (!esVacio(dto.respuesta())) {
-            pqrs.setRespuesta(dto.respuesta());
+            // Protección bidireccional: el administrador tampoco inyectará HTML
+            pqrs.setRespuesta(HtmlUtils.htmlEscape(dto.respuesta()));
         }
 
         return pqrsRepository.save(pqrs);
