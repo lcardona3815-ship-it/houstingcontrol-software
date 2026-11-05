@@ -1,5 +1,0 @@
-archivos-nuevos-no-rastreados.txt
-auditoria-codigo-fuente.zip
-auditoria-historial.bundle
-cambios-sin-commit.patch
-reporte-cambios-pendientes.txt
