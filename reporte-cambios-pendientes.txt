@@ -1,0 +1,3 @@
+?? auditoria-codigo-fuente.zip
+?? auditoria-historial.bundle
+?? reporte-cambios-pendientes.txt
