@@ -22,7 +22,7 @@ Para ejecutar este proyecto localmente, necesitas instalar:
    ```bash
    git clone https://github.com/lcardona3815-ship-it/houstingcontrol-software.git
    cd housingcontrol-software
-   git checkout feature/esqueleto-inicial
+   git checkout main
    ```
 
 2. Levanta la base de datos:
@@ -31,13 +31,19 @@ Para ejecutar este proyecto localmente, necesitas instalar:
    ```
 
 3. Inicia el servidor backend:
+   
+   Navegar a la ruta C:\Users\Sebas\Desktop\Proyecto\houstingcontrol-software\backend\software y ejecutar SoftwareApplication.java
+    
    ```bash
-   cd backend/walkin-skeleton
-   ./mvnw spring-boot:run
-   ```
-   Desde PowerShell
-   ```powershell
-   .\mvnw.cmd spring-boot:run
+   cd backend/software
+    # 1. Empaquetamos tus credenciales reales
+    $credenciales = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes("1010000001:LA_CONTRASENA_REAL"))
+
+    # 2. Configuramos las cabeceras con el pase de seguridad correcto
+    $headers = @{
+    "Content-Type" = "application/json; charset=utf-8"
+    "Authorization" = "Basic $credenciales"
+    }
    ```
    El servidor iniciará localmente y estará disponible en http://localhost:8080
 
@@ -46,19 +52,23 @@ Para ejecutar este proyecto localmente, necesitas instalar:
 Para probar la creación de una PQRS de extremo a extremo, asegúrate de tener al menos un usuario registrado en tu base de datos y ejecuta el siguiente comando en PowerShell:
 
 ```powershell
-Invoke-RestMethod -Uri http://localhost:8080/api/pqrs -Method POST -Headers @{"Content-Type"="application/json; charset=utf-8"} -Body '{"asunto": "Fallo electrico", "descripcion": "Lampara del pasillo fundida", "cedula_usuarios": "[CEDULA_VALIDA]"}'
+#Crear una PQRS
+Invoke-RestMethod -Uri http://localhost:8080/api/pqrs -Method POST -Headers $headers -Body '{"asunto": "Fallo electrico", "descripcion": "Lampara del pasillo fundida", "cedulaUsuarios": "1010000001"}'
+
+#Consultar las PQRS
+Invoke-RestMethod -Uri http://localhost:8080/api/pqrs/mis-solicitudes -Method GET -Headers $headers
 ```
 
 Respuesta exitosa esperada (HTTP 201 Created):
 
 ```json
 {
-  "id": "e4b3c2a1-1234-5678-9abc-def012345678",
-  "asunto": "Fallo electrico",
-  "descripcion": "Lampara del pasillo fundida",
-  "estado": "PENDIENTE",
-  "cedula_usuarios": "1010000004",
-  "fechaHora": "2026-09-15T21:05:15.123"
+    asunto         : Fallo electrico
+    descripcion    : Lampara del pasillo fundida
+    cedulaUsuarios : 1010000001
+    estado         : PENDIENTE
+    id             : 05b2d2ce-84ce-4c12-85c2-3d5a6d61c196
+    respuesta      :
 }
 ```
 
@@ -71,4 +81,9 @@ Toda la documentación técnica y de negocio se encuentra estructurada en las si
 - [`docs/uso-ia.md`](./docs/uso-ia.md) — Política de uso de IA y bitácora del equipo.
 - [`docs/rebanada.md`](/docs/rebanada.md) - Esqueleto Andante: Diagramas de secuencia, clases y trazabilidad técnica.
 - [`docs/models`](/docs/models) - Modelo de la base de datos y modelo de dominio.
+- [`docs/deuda-tecnica.md`](/docs/deuda-tecnica.md) - Planteamiento de la deuda técnica del proyecto.
+- [`docs/decisiones-tecnicas.md`](/docs/decisiones-tecnicas.md) - Documentación de las decisiones fuertes tomadas en el trayecto del proyecto.
+- [`docs/informe-tecnico.md`](/docs/informe-tecnico.md) - Descripción de la implementación de las historias de usuario.
+- [`docs/paquete-entrevista.md`](/docs/paquete-entrevista.md) - Entrevistas realizadas.
+- [`docs/seguridad-y-rnf.md`](/docs/informe-tecnico.md) - Descripción de la implementación de las historias de usuario.
 - [`database`](/database) - Scripts DDL e instrucciones de inserción de datos para pruebas.
